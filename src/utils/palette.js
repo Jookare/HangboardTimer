@@ -18,6 +18,15 @@ export const palette = {
     redBorder: '#fca5a5',
     redIconBG: '#fecaca',
 
+    gray: "#ebebeb",
+    grayBorder: "#e8e8e8",
+    grayIconBG: "#aeaeae",
+
+
     dark: "#3f3f46",
-    darkBorder: "#18181b"
+    darkBorder: "#18181b",
+
+    redSwitch: "#f04770",
+    greenSwitch: "#06d7a0",
+    graySwitch: "#3c4854"
 }

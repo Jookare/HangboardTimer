@@ -2,12 +2,13 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { useKeepAwake } from 'expo-keep-awake';
 import { Text, TextInput } from 'react-native';
 import MainScreen from './src/screens/index';
 import { MainHeaderTitle, MainHeaderRight } from './src/navigation/headers';
 import WorkoutScreen from './src/screens/WorkoutScreen';
-import EnduranceScreen from './src/screens/4x4Screen';
+import EnduranceScreen from './src/screens/EnduranceScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 import CustomScreen from './src/screens/CustomScreen';
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ const disableFontScaling = () => {
 
 // App component
 const App = () => {
+  useKeepAwake();
   useEffect(() => {
     disableFontScaling();
   }, [])
@@ -44,6 +46,9 @@ const App = () => {
         <Stack.Screen name="Workout" component={WorkoutScreen} />
         <Stack.Screen name="4x4" component={EnduranceScreen} />
         <Stack.Screen name="CustomWorkout" component={CustomScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} options={{
+          headerTitleAlign: "center", 
+          presentation: "modal",}} />
 
       </Stack.Navigator>
     </NavigationContainer>
