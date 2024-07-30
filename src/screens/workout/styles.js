@@ -36,4 +36,16 @@ export const workoutStyles =  StyleSheet.create({
         fontWeight: "500",
         color: "#1c1c1c"
     },
+    buttonContainer: {
+        flexDirection: "row",
+        padding: 20,
+        width: "100%",
+        alignItems: "center"
+    },
+    input: {
+        color: '#313131',
+        fontWeight: "600",
+        fontSize: 36,
+        maxWidth: "90%"
+    },
 })

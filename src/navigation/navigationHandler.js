@@ -26,9 +26,9 @@ export async function handleButtonPress(navigation, navID) {
         case "#workout#@new":
             workoutData = {
                 values: [1, 1, 0, 0, 0, 0, 0, 0],
-                workout: ""
+                workout: "",
             }
-            handleNavigation(navigation, 'CustomWorkout', workoutData);
+            handleNavigation(navigation, 'NewWorkout', workoutData);
             break;
         default:
             const value = await getWorkout(navID);
@@ -46,7 +46,7 @@ export async function handleButtonPress(navigation, navID) {
                 workout: workout,
                 id: id
             };
-            handleNavigation(navigation, 'Workout', workoutData);
+            handleNavigation(navigation, 'CustomWorkout', workoutData);
             break;
     }
 };

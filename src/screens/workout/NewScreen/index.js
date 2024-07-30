@@ -1,27 +1,48 @@
-// Import necessary dependencies
 import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { View, Text, Alert, TextInput, Image, ScrollView } from 'react-native';
-import { NumberSelector } from '../../components/selectors/numberSelector';
-import { TimeSelector } from '../../components/selectors/timeSelector';
-import { useWorkoutValues } from '../../utils/functions';
-import { workoutStyles } from './styles';
-import StartButton from '../../components/buttons/startButton';
+import { NumberSelector } from '../../../components/selectors/numberSelector';
+import { TimeSelector } from '../../../components/selectors/timeSelector';
+import { useWorkoutValues } from '../../../utils/functions';
+import { workoutStyles } from '../styles';
+import StartButton from '../../../components/buttons/startButton';
+import { RemoveButton, SaveButton } from './buttons';
+import { getAllWorkouts, saveWorkout, deleteWorkout } from '../../../utils/functions';
 
-const WorkoutScreen = () => {
+const NewScreen = () => {
     const route = useRoute();
     const { workout, values, id } = route.params;
-    console.log(workout)
     const navigation = useNavigation();
-
     const workoutValues = useWorkoutValues(values);
+    const [workoutName, onChangeWorkoutName] = useState('New workout');
+
+    const handleSave = async () => {
+        const allWorkouts = await getAllWorkouts();
+        // await AsyncStorage.clear()
+        let stored = JSON.stringify({
+            id: `workout${(allWorkouts.length + 1)}`,
+            values: [workoutValues.sets, workoutValues.reps, Number(workoutValues.hangtimeMinutes),
+                Number(workoutValues.hangtimeSeconds), Number(workoutValues.restTimeMinutes),
+                Number(workoutValues.restTimeSeconds), Number(workoutValues.restTimeSetMinutes),
+                Number(workoutValues.restTimeSetSeconds)],
+            name: workoutName
+        })
+        await saveWorkout(`workout${(allWorkouts.length + 1)}`, stored);
+        navigation.navigate('Main');
+    }
 
     return (
         <View style={workoutStyles.background}>
             <View style={workoutStyles.header}>
-                <Text style={workoutStyles.title}>{workout}</Text>
-       
+                <TextInput
+                    style={workoutStyles.input}
+                    onChangeText={onChangeWorkoutName}
+                    placeholder='New name'
+                    value={workoutName}
+                    placeholderTextColor="#d8d5e8"
+                    editable={true}
+                />
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>
@@ -43,9 +64,13 @@ const WorkoutScreen = () => {
                     timeMinutes={workoutValues.restTimeSetSeconds} setTimeMinutes={workoutValues.setRestTimeSetSeconds}
                     timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={workoutValues.setRestTimeMinutes} />
             </ScrollView>
-            <StartButton />
+            <View style={[workoutStyles.buttonContainer, { justifyContent: "space-between" }]}>
+                <SaveButton onPress={handleSave} />
+                <StartButton />
+                <RemoveButton onPress={handleSave} />
+            </View>
         </View>
     )
-};
+}
 
-export default WorkoutScreen;
+export default NewScreen;
