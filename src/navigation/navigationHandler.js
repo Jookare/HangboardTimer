@@ -1,4 +1,4 @@
-import { getWorkout } from '../utils/functions'
+import { getItem } from '../utils/functions'
 // Handle button presses
 export async function handleButtonPress(navigation, navID) {
     let values, workout, id, workoutData;
@@ -31,7 +31,8 @@ export async function handleButtonPress(navigation, navID) {
             handleNavigation(navigation, 'NewWorkout', workoutData);
             break;
         default:
-            const value = await getWorkout(navID);
+            const value = await getItem(navID);
+            console.log(value);
             if (value) {
                 workout = value.name;
                 values = value.values;

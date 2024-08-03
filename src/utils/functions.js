@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-export const getAllWorkouts = async () => {
+export const getAllItems = async () => {
     try {
-        const keys = await AsyncStorage.getAllKeys();
-        return keys;
+        keys = await AsyncStorage.getAllKeys()
+        return keys
     } catch (e) {
         // Handle error reading keys
         console.error("Error reading keys:", e);
@@ -13,7 +12,7 @@ export const getAllWorkouts = async () => {
     }
 };
 
-export const getWorkout = async (id) => {
+export const getItem = async (id) => {
     try {
         const jsonValue = await AsyncStorage.getItem(id);
         return jsonValue != null ? JSON.parse(jsonValue) : null;
@@ -22,8 +21,9 @@ export const getWorkout = async (id) => {
     }
 };
 
-export const saveWorkout = async (id, value) => {
+export const saveItem = async (id, value) => {
     try {
+        console.log(value);
         await AsyncStorage.setItem(id, value);
     } catch (e) {
         // error reading value
@@ -31,7 +31,7 @@ export const saveWorkout = async (id, value) => {
     console.log('Workout saved.');
 };
 
-export const deleteWorkout = async (id) => {
+export const deleteItem = async (id) => {
     try {
         await AsyncStorage.removeItem(id);
     } catch (e) {
@@ -61,14 +61,27 @@ export const useWorkoutValues = (initialValues) => {
     const [restTimeSetMinutes, setRestTimeSetMinutes] = useState(String(initialValues[6]).padStart(2, '0'));
     const [restTimeSetSeconds, setRestTimeSetSeconds] = useState(String(initialValues[7]).padStart(2, '0'));
 
-    return {
-        sets, setSets,
-        reps, setReps,
-        hangtimeMinutes, setHangtimeMinutes,
-        hangtimeSeconds, setHangtimeSeconds,
-        restTimeMinutes, setRestTimeMinutes,
-        restTimeSeconds, setRestTimeSeconds,
-        restTimeSetMinutes, setRestTimeSetMinutes,
-        restTimeSetSeconds, setRestTimeSetSeconds,
+    const workoutValues = {
+        sets,
+        reps,
+        hangtimeMinutes,
+        hangtimeSeconds,
+        restTimeMinutes,
+        restTimeSeconds,
+        restTimeSetMinutes,
+        restTimeSetSeconds,
     };
+
+    const setters = {
+        setSets,
+        setReps,
+        setHangtimeMinutes,
+        setHangtimeSeconds,
+        setRestTimeMinutes,
+        setRestTimeSeconds,
+        setRestTimeSetMinutes,
+        setRestTimeSetSeconds,
+    };
+
+    return { workoutValues, setters };
 };

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 
-export const workoutStyles =  StyleSheet.create({
+export const workoutStyles = StyleSheet.create({
     background: {
         flex: 1,
         justifyContent: "center",
@@ -10,8 +10,11 @@ export const workoutStyles =  StyleSheet.create({
         backgroundColor: "#ffffff",
     },
     header: {
+        flexDirection: "row",
+        justifyContent: "center",
         alignItems: "center",
         gap: 20,
+        width: "90%",
         marginTop: 20
     },
     title: {
@@ -25,22 +28,24 @@ export const workoutStyles =  StyleSheet.create({
         maxWidth: 600
     },
     contentContainer: {
-        flex: 1,
         flexGrow: 1,
         width: "100%",
         paddingVertical: 20,
         alignItems: 'center',
     },
     text: {
-        fontSize: 16,
+        marginTop: 8,
+        marginBottom: 2,
+        fontSize: 18,
         fontWeight: "500",
         color: "#1c1c1c"
     },
     buttonContainer: {
         flexDirection: "row",
-        padding: 20,
+        paddingHorizontal: 20,
+        marginBottom: 20,
         width: "100%",
-        alignItems: "center"
+        alignItems: "center",
     },
     input: {
         color: '#313131',

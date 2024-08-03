@@ -32,10 +32,32 @@ export const startButtonStyle = StyleSheet.create({
         borderRadius: 20,
         padding: 16,
         flexDirection: "row",
-        margin: 20
+        margin: 20,
+        gap: 10,
     },
     startButtonText: {
         fontSize: 20,
-        color: "#f7f7f9"
+        color: palette.white
     },
 })
+
+
+export const sideButtonStyle = StyleSheet.create({
+    sideButton: {
+        width: 80,
+        aspectRatio: 1,
+        borderRadius: 75,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    saveButton: {
+        backgroundColor: "#f0fdf4",
+        borderWidth: 2,
+        borderColor: "#dcfce7",
+    },
+    removeButton: {
+        backgroundColor: "#fef2f2",
+        borderWidth: 2,
+        borderColor: "#fee2e2",
+    }
+});

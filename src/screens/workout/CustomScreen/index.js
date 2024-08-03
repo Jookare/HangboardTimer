@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { View, Text, Alert, TextInput, Image, ScrollView } from 'react-native';
+import { View, Text, Alert, TextInput, ScrollView } from 'react-native';
 import { NumberSelector } from '../../../components/selectors/numberSelector';
 import { TimeSelector } from '../../../components/selectors/timeSelector';
 import { useWorkoutValues } from '../../../utils/functions';
 import { workoutStyles } from '../styles';
-import StartButton from '../../../components/buttons/startButton';
-import { RemoveButton, SaveButton } from './buttons';
-import { getAllWorkouts, saveWorkout, deleteWorkout } from '../../../utils/functions';
+import { StartButton } from '../../../components/buttons/startButton';
+import { RemoveButton, SaveButton } from '../../../components/buttons/sideButton'
+import { saveItem, deleteItem } from '../../../utils/functions';
+import { Ionicons } from '@expo/vector-icons';
+import { toast } from '@backpackapp-io/react-native-toast';
 
 const CustomScreen = () => {
     const route = useRoute();
     const { workout, values, id } = route.params;
     const navigation = useNavigation();
-    const workoutValues = useWorkoutValues(values);
-    const [workoutName, onChangeWorkoutName] = useState('Custom workout');
+    const { workoutValues, setters } = useWorkoutValues(values);
+    const [workoutName, onChangeWorkoutName] = useState(workout);
 
-    console.log(id)
     const storeData = async () => {
-        // await AsyncStorage.clear()
         let stored = JSON.stringify({
             id: id,
             values: [workoutValues.sets, workoutValues.reps, Number(workoutValues.hangtimeMinutes),
@@ -28,12 +28,18 @@ const CustomScreen = () => {
             Number(workoutValues.restTimeSetSeconds)],
             name: workoutName
         })
-        await saveWorkout(id, stored);
+        await saveItem(id, stored);
+        toast.success('Workout saved!', {
+            width: 300
+        });
     }
 
     const removeData = async () => {
-        await deleteWorkout(id);
+        await deleteItem(id);
         navigation.navigate('Main');
+        toast.success('Workout removed!', {
+            width: 300
+        });
     }
 
     const createSaveButtonAlert = () =>
@@ -55,34 +61,47 @@ const CustomScreen = () => {
             },
             { text: 'OK', onPress: () => removeData() },
         ]);
+
+    const handleNavigation = () => {
+        navigation.navigate('Timer', { workoutValues });
+    };
+
     return (
         <View style={workoutStyles.background}>
             <View style={workoutStyles.header}>
-                <Text>Custom</Text>
+                <TextInput
+                    style={workoutStyles.input}
+                    onChangeText={onChangeWorkoutName}
+                    placeholder='New name'
+                    value={workoutName}
+                    placeholderTextColor="#d8d5e8"
+                    editable={true}
+                />
+                <Ionicons name="pencil" size={40} color="#313131" />
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>
-                <NumberSelector value={workoutValues.sets} setValue={workoutValues.setSets} />
+                <NumberSelector value={workoutValues.sets} setValue={setters.setSets} />
                 <Text style={workoutStyles.text}>Reps</Text>
-                <NumberSelector value={workoutValues.reps} setValue={workoutValues.setReps} />
+                <NumberSelector value={workoutValues.reps} setValue={setters.setReps} />
                 <Text style={workoutStyles.text}>Hang time</Text>
                 <TimeSelector
-                    timeMinutes={workoutValues.hangtimeMinutes} setTimeMinutes={workoutValues.setHangtimeMinutes}
-                    timeSeconds={workoutValues.hangtimeSeconds} setTimeSeconds={workoutValues.setHangtimeSeconds} />
+                    timeMinutes={workoutValues.hangtimeMinutes} setTimeMinutes={setters.setHangtimeMinutes}
+                    timeSeconds={workoutValues.hangtimeSeconds} setTimeSeconds={setters.setHangtimeSeconds} />
 
                 <Text style={workoutStyles.text}>Rest time after hang</Text>
                 <TimeSelector
-                    timeMinutes={workoutValues.restTimeSeconds} setTimeMinutes={workoutValues.setRestTimeSeconds}
-                    timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={workoutValues.setRestTimeMinutes} />
+                    timeMinutes={workoutValues.restTimeSeconds} setTimeMinutes={setters.setRestTimeSeconds}
+                    timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={setters.setRestTimeMinutes} />
 
                 <Text style={workoutStyles.text}>Rest time between sets</Text>
                 <TimeSelector
-                    timeMinutes={workoutValues.restTimeSetSeconds} setTimeMinutes={workoutValues.setRestTimeSetSeconds}
-                    timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={workoutValues.setRestTimeMinutes} />
+                    timeMinutes={workoutValues.restTimeSetSeconds} setTimeMinutes={setters.setRestTimeSetSeconds}
+                    timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={setters.setRestTimeMinutes} />
             </ScrollView>
             <View style={[workoutStyles.buttonContainer, { justifyContent: "space-between" }]}>
                 <SaveButton onPress={createSaveButtonAlert} />
-                <StartButton />
+                <StartButton onPress={handleNavigation} />
                 <RemoveButton onPress={createRemoveButtonAlert} />
             </View>
         </View>

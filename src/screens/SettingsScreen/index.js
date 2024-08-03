@@ -1,18 +1,66 @@
 // Import necessary dependencies
-import React, { useState } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { palette } from '../../utils/palette';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, Alert, Pressable, StyleSheet, Button, Switch } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { Slider } from '@miblanchard/react-native-slider';
 import { Audio } from 'expo-av';
+import { deleteItem, getItem, getAllItems, saveItem } from '../../utils/functions';
 
+import { toast, Toasts } from '@backpackapp-io/react-native-toast';
 
 const SettingsScreen = () => {
-	const [value, setValue] = useState(5)
-	const [isEnabled, toggleSwitch] = useState(false)
+	const [prep, setPrep] = useState(5);
+	const [debouncedPrep, setDebouncedPrep] = useState(prep);
+	const [audio, setAudio] = useState(false);
 
+	const fetchItems = async () => {
+		const audio2 = await getItem("@audio");
+		const prep2 = await getItem("@preparation");
+		console.log(prep2);
+		setAudio(audio2);
+		setPrep(prep2);
+	}
+
+	useFocusEffect(
+		React.useCallback(() => {
+			fetchItems();
+		}, [])
+	);
+
+	const handleAudio = async () => {
+		const currAudio = !audio
+		await saveItem("@audio", JSON.stringify(currAudio));
+		setAudio(currAudio);
+	}
+
+	const handlePrepChange = (value) => {
+		setPrep(value);
+	};
+
+	useEffect(() => {
+		// Set up debounce delay
+		const delayDebounceFn = setTimeout(() => {
+			if (prep !== debouncedPrep) {
+				setDebouncedPrep(prep);
+				saveItem("@preparation", JSON.stringify(prep));
+			}
+		}, 100);
+
+		return () => clearTimeout(delayDebounceFn);
+	}, [prep]);
+
+
+	const handleWorkoutRemove = async () => {
+		const keys = await getAllItems();
+		for (let i = 0; i < keys.length; i++) {
+			if (keys[i].startsWith('#')) {
+				value = await deleteItem(keys[i]);
+			}
+		}
+	}
 
 	const createRemoveAllAlert = () =>
 		Alert.alert('Remove ALL custom workouts', 'Are you sure you want to remove all custom workouts?', [
@@ -22,34 +70,41 @@ const SettingsScreen = () => {
 				style: 'cancel',
 			},
 			{
-				text: 'OK', onPress: () => {
-					clearAll();
+				text: 'OK', onPress: async () => {
+					handleWorkoutRemove();
+					toast.success('All workouts removed!', {
+						width: 300
+					});
 				}
 			},
 		]);
+
 	return (
 		<View style={styles.background}>
 			<View style={styles.container}>
-				<Text style={styles.heading}>General settings</Text>
+				<Text style={styles.heading}>Audio</Text>
 				<View style={[styles.itemContainer, styles.center]}>
-					<Text>Sound	</Text>
-					<Switch
-						trackColor={{ false: palette.redSwitch, true: palette.greenSwitch }}
-						thumbColor={palette.gray}
-						onValueChange={toggleSwitch}
-						value={isEnabled}
-					/>
+					<Text>Sound</Text>
+					<View style={styles.switchContainer}>
+						<Text style={{ fontWeight: "500" }}>{audio ? "on" : "off"}</Text>
+						<Switch
+							trackColor={{ false: palette.redSwitch, true: palette.greenSwitch }}
+							thumbColor={palette.gray}
+							onValueChange={handleAudio}
+							value={audio}
+						/>
+					</View>
 				</View>
 
 				<View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
 					<Text style={styles.heading}>Preparation time</Text>
-					<Text>{value} sec</Text>
+					<Text>{prep} sec</Text>
 
 				</View>
 				<View style={styles.itemContainer}>
 					<Slider
-						value={value}
-						onValueChange={setValue}
+						value={prep}
+						onValueChange={(val) => handlePrepChange(val)}
 						step={1}
 						minimumValue={0}
 						maximumValue={10}
@@ -74,7 +129,7 @@ const SettingsScreen = () => {
 				</View>
 
 			</View>
-			<Text style={styles.heading}>App version v.1.0.0</Text>
+			<Text style={styles.heading}>App version V.1.1.1</Text>
 		</View>
 	)
 }
@@ -92,20 +147,17 @@ const styles = StyleSheet.create({
 		maxWidth: 600,
 		marginTop: 10,
 	},
-	removeButton: {
-		borderColor: palette.grayIconBG,
-		borderWidth: 2,
-		borderRadius: 8,
-		padding: 16,
-		flexDirection: "row",
-		alignItems: "center",
-	},
 	heading: {
 		marginTop: 10,
 		fontSize: 14,
 		fontWeight: "500",
 		marginHorizontal: 4,
 		color: palette.graySwitch
+	},
+	switchContainer: {
+		position: "relative",
+		flexDirection: "row",
+		alignItems: "center",
 	},
 	itemContainer: {
 		width: "100%",
@@ -116,6 +168,14 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		height: 60,
 		justifyContent: "center"
+	},
+	removeButton: {
+		borderColor: palette.grayIconBG,
+		borderWidth: 2,
+		borderRadius: 8,
+		padding: 16,
+		flexDirection: "row",
+		alignItems: "center",
 	},
 	center: {
 		flexDirection: "row",

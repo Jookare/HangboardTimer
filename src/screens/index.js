@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, Button } from 'react-native';
 import { palette } from '../utils/palette';
 import { handleButtonPress } from '../navigation/navigationHandler';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import WorkoutButton from '../components/buttons/workoutButton';
-import { getWorkout, getAllWorkouts } from "../utils/functions"
+import { getItem, getAllItems } from "../utils/functions"
 
 const ButtonData = [
     { text: "Short Max Hangs", color: palette.blue, borderColor: palette.blueBorder, iconBG: palette.blueIconBG, navID: "#workout#@1", iconName: "flame" },
     { text: "Repeaters", color: palette.blue, borderColor: palette.blueBorder, iconBG: palette.blueIconBG, navID: "#workout#@2", iconName: "flame" },
-    { text: "4 x 4", color: palette.green, borderColor: palette.greenBorder, iconBG: palette.greenIconBG, navID: "#workout#@3", iconName: "pulse-sharp" },
+    // { text: "4 x 4", color: palette.green, borderColor: palette.greenBorder, iconBG: palette.greenIconBG, navID: "#workout#@3", iconName: "pulse-sharp" },
     { text: "New workout", color: palette.yellow, borderColor: palette.yellowBorder, iconBG: palette.yellowIconBG, navID: "#workout#@new", iconName: "add-circle-outline" },
 ];
 
@@ -18,13 +18,16 @@ const MainScreen = () => {
     const [workouts, setWorkouts] = useState([]);
 
     const fetchWorkouts = async () => {
-        const keys = await getAllWorkouts();
+        const keys = await getAllItems();
+
         let workouts = [];
         let value;
         for (let i = 0; i < keys.length; i++) {
-            value = await getWorkout(keys[i]);
-            console.log(value);
-            workouts.push(value);
+            if (keys[i].startsWith('#')) {
+                value = await getItem(keys[i]);
+                console.log(value)
+                workouts.push(value);
+            }
         }
         setWorkouts(workouts);
     };
@@ -43,7 +46,6 @@ const MainScreen = () => {
                     source={require("../../assets/Group.png")}
                     style={styles.titleImage}
                 />
-
                 {ButtonData.slice(0, 4).map((button, index) => (
                     <WorkoutButton
                         key={index}
@@ -68,7 +70,6 @@ const MainScreen = () => {
                         text={item.name}
                         iconName={"barbell"}
                     />
-
                 )
                 )}
             </ScrollView>
@@ -78,6 +79,12 @@ const MainScreen = () => {
 
 
 const styles = StyleSheet.create({
+    button: {
+        fontSize: "17px",
+        fontWeight: "bold",
+        borderRadius: "0.75em",
+        backgroundColor: "#e8e8e8"
+    },
     background: {
         flex: 1,
         justifyContent: "center",
