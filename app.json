@@ -17,7 +17,10 @@
         "backgroundColor": "#EF5452"
       },
       "package": "com.jookare.HangboardTimer",
-      "versionCode": 5
+      "versionCode": 6,
+      "permissions": [
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +37,13 @@
           "microphonePermission": false
         }
       ]
-    ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a781e431-2919-47c3-8e69-d3044d131b39"
+    },
+    "ios": {}
   }
 }

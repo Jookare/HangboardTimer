@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-
+import { palette } from '../../utils/palette';
 
 export const workoutStyles = StyleSheet.create({
     background: {
@@ -7,7 +7,7 @@ export const workoutStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
-        backgroundColor: "#e8e8e8",
+        backgroundColor: palette.white,
     },
     header: {
         flexDirection: "row",

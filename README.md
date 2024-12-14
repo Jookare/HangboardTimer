@@ -30,13 +30,28 @@ Run the following commands:
 # Clone this repo
 git clone https://github.com/Jookare/HangboardTimer && cd HangboardTimer
 # Install dependencies
-yarn install
+npm install
 
 # Run the app with Expo
-yarn start
+npm start
 ```
 
 The [Expo](https://expo.io) packager will show, and you can either:
 
 -   install the Expo app, scan the displayed QR code, and run the app on your mobile phone directly.
 -   open the Android simulator.
+
+---
+
+Updating the code:
+
+```
+npx expo install expo@latest
+npx expo install --fix
+```
+
+Creating new build
+```
+eas build --platform android
+```
+

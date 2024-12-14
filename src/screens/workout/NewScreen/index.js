@@ -15,7 +15,7 @@ const NewScreen = () => {
     const { workout, values, id } = route.params;
     const navigation = useNavigation();
     const { workoutValues, setters } = useWorkoutValues(values);
-    const [workoutName, onChangeWorkoutName] = useState('New workout');
+    const [workoutName, onChangeWorkoutName] = useState('');
 
     const handleSave = async () => {
         const allWorkouts = await getAllItems();
@@ -38,7 +38,7 @@ const NewScreen = () => {
                 <TextInput
                     style={workoutStyles.input}
                     onChangeText={onChangeWorkoutName}
-                    placeholder='New name'
+                    placeholder='Workout name'
                     value={workoutName}
                     placeholderTextColor="#d8d5e8"
                     editable={true}

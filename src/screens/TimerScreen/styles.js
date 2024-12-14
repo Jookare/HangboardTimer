@@ -1,11 +1,12 @@
 
 import { StyleSheet } from 'react-native';
+import { palette } from '../../utils/palette';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: "#e8e8e8",
+        backgroundColor: palette.white,
         gap: 20,
     },
     titleContainer: {
