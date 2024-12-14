@@ -11,12 +11,12 @@ const PHASE_HANG = 'hang';
 const PHASE_REST_AFTER_HANG = 'restAfterHang';
 const PHASE_REST_BETWEEN_SETS = 'restBetweenSets';
 const PHASE_COMPLETE = 'complete';
+const soundFiles = [
+    require('../../../assets/ready-beep.mp3'),
+    require('../../../assets/start-beep.mp3'),
+    require('../../../assets/end-beep.mp3'),
+];
 
-const soundFiles = {
-    ready: require('../../../assets/ready-beep.mp3'),
-    start: require('../../../assets/start-beep.mp3'),
-    end: require('../../../assets/end-beep.mp3'),
-};
 
 export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, reps }) => {
     const [currentPhase, setCurrentPhase] = useState('hang');
@@ -137,8 +137,6 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
 
     // Function to play the sound
     const playSound1 = async (type) => {
-        // console.log(sounds[2]);
-        // await sounds[2].replayAsync();
         if (type === "ready" && sounds[0]) {
             try {
                 console.log("Playing sound 1...");

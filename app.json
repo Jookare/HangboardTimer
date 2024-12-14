@@ -17,7 +17,7 @@
         "backgroundColor": "#EF5452"
       },
       "package": "com.jookare.HangboardTimer",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"

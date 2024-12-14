@@ -7,7 +7,7 @@ export const workoutStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#e8e8e8",
     },
     header: {
         flexDirection: "row",

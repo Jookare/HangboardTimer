@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		width: "100%",
-		backgroundColor: palette.white,
+		backgroundColor: "#e8e8e8",
 	},
 	container: {
 		width: "90%",
