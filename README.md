@@ -1,9 +1,8 @@
 <p align="center">
-    <img alt="oss image" src="./assets/icon.png" width="200px" style="border-radius: 25px;">
+    <img alt="oss image" src="./assets/icon.png" width="200px">
     <h1 align="center">Hangboard Timer</h1>
 </p>
 
----
 
 A very simple and highly customizable hangboard timing app for Android
 
