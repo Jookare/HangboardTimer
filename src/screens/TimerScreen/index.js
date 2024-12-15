@@ -3,7 +3,7 @@ import { View, Text, Button, Pressable } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
-import { useWorkoutTimer } from './useWorkoutTimer';
+import { useWorkoutTimer } from './hooks/useWorkoutTimer';
 
 import Gradient from './Gradient';
 import PhaseText from './PhaseText';

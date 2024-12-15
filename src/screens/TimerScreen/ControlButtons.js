@@ -8,7 +8,6 @@ const ControlButtons = ({
     nextRep,
     previousFlag,
     nextFlag,
-    timer,
 }) => {
     return (
         <View style={styles.buttonContainer}>
