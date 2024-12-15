@@ -92,6 +92,7 @@ const SettingsScreen = () => {
 							thumbColor={palette.gray}
 							onValueChange={handleAudio}
 							value={audio}
+							style={styles.switch}
 						/>
 					</View>
 				</View>
@@ -116,12 +117,12 @@ const SettingsScreen = () => {
 						onPress={createRemoveAllAlert}
 						style={({ pressed }) => [{
 							opacity: pressed ? 0.5 : 1.0,
+							height: 50,
 						}, styles.center
 						]}>
 						<View style={[{ flexDirection: "row" }, styles.center]}>
 							<Ionicons name="trash" size={24} color="black" />
 							<Text style={{ marginHorizontal: 6 }}>Remove all</Text>
-
 
 						</View>
 						<Ionicons name="chevron-forward" size={24} color="black" />
@@ -158,6 +159,11 @@ const styles = StyleSheet.create({
 		position: "relative",
 		flexDirection: "row",
 		alignItems: "center",
+		padding: 2,
+	},
+	switch:{
+		height: 50,
+		width: 50,
 	},
 	itemContainer: {
 		width: "100%",

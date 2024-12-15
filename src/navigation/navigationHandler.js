@@ -28,7 +28,7 @@ export async function handleButtonPress(navigation, navID) {
                 values: [1, 1, 0, 0, 0, 0, 0, 0],
                 workout: "",
             }
-            handleNavigation(navigation, 'NewWorkout', workoutData);
+            handleNavigation(navigation, 'New Workout', workoutData);
             break;
         default:
             const value = await getItem(navID);
@@ -47,7 +47,7 @@ export async function handleButtonPress(navigation, navID) {
                 workout: workout,
                 id: id
             };
-            handleNavigation(navigation, 'CustomWorkout', workoutData);
+            handleNavigation(navigation, 'Custom Workout', workoutData);
             break;
     }
 };

@@ -48,17 +48,39 @@ const App = () => {
               name="Main"
               component={MainScreen}
               options={{
-                headerTitle: (props) => <MainHeaderTitle {...props} />, headerTitleAlign: "center",
-                headerRight: (props) => <MainHeaderRight {...props} />
+                headerTitle: (props) => <MainHeaderTitle {...props} />,
+                headerTitleAlign: "center",
+                headerRight: (props) => <MainHeaderRight {...props} />,
               }} />
-            <Stack.Screen name="Workout" component={WorkoutScreen} />
+            <Stack.Screen name="Workout" component={WorkoutScreen}
+              options={{
+                headerTitleStyle: {
+                  fontSize: 20,
+                },
+              }} />
             {/* <Stack.Screen name="4x4" component={EnduranceScreen} /> */}
-            <Stack.Screen name="NewWorkout" component={NewScreen} />
-            <Stack.Screen name="CustomWorkout" component={CustomScreen} />
-            <Stack.Screen name="Timer" component={TimerScreen} />
+            <Stack.Screen name="New Workout" component={NewScreen} options={{
+              headerTitleStyle: {
+                fontSize: 20,
+              },
+            }} />
+            <Stack.Screen name="Custom Workout" component={CustomScreen} options={{
+              headerTitleStyle: {
+                fontSize: 20,
+              },
+            }} />
+            <Stack.Screen name="Timer" component={TimerScreen} options={{
+              headerTitleStyle: {
+                fontSize: 20,
+              },
+            }} />
             <Stack.Screen name="Settings" component={SettingsScreen} options={{
               headerTitleAlign: "center",
               presentation: "modal",
+              headerTitleStyle: {
+                fontSize: 20,
+              },
+
             }} />
 
           </Stack.Navigator>

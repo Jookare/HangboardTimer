@@ -72,9 +72,9 @@ const CustomScreen = () => {
                 <TextInput
                     style={workoutStyles.input}
                     onChangeText={onChangeWorkoutName}
-                    placeholder='New name'
+                    placeholder='Workout name'
                     value={workoutName}
-                    placeholderTextColor="#d8d5e8"
+                    placeholderTextColor="#8d8d8d"
                     editable={true}
                 />
                 <Ionicons name="pencil" size={40} color="#313131" />

@@ -40,7 +40,7 @@ const NewScreen = () => {
                     onChangeText={onChangeWorkoutName}
                     placeholder='Workout name'
                     value={workoutName}
-                    placeholderTextColor="#d8d5e8"
+                    placeholderTextColor="#8d8d8d"
                     editable={true}
                 />
                 <Ionicons name="pencil" size={40} color="#555555" />

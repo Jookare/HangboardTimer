@@ -65,7 +65,7 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                 </TouchableOpacity>
                 <View style={styles.inputDiv}>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'right', width: 40  }]}
+                        style={[selectorStyles.text, { textAlign: 'right', width: 50, height:50 }]}
                         keyboardType="numeric"
                         maxLength={2}
                         value={tempMinutes}
@@ -75,7 +75,7 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                     />
                     <Text style={selectorStyles.text}>:</Text>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'left', width: 40 }]}
+                        style={[selectorStyles.text, { textAlign: 'left', width: 50, height:50 }]}
                         keyboardType="numeric"
                         maxLength={2}
                         value={tempSeconds}
