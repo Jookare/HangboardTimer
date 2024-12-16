@@ -22,13 +22,13 @@ export const NumberSelector = ({ value, setValue }) => {
             <View style={[selectorStyles.row, selectorStyles.div]}  >
                 <TouchableOpacity onPress={() => handleDecrement(setValue)}>
                     <View style={[selectorStyles.icon, selectorStyles.iconMinus]}>
-                        <Entypo name="minus" size={24} style={selectorStyles.iconColor} />
+                        <Entypo name="minus" size={20} style={selectorStyles.iconColor} />
                     </View>
                 </TouchableOpacity>
                 <Text style={selectorStyles.text}>{value}</Text>
                 <TouchableOpacity onPress={() => handleIncrement(setValue)}>
                     <View style={[selectorStyles.icon, selectorStyles.iconPlus]}>
-                        <Entypo name="plus" size={24} style={selectorStyles.iconColor} />
+                        <Entypo name="plus" size={20} style={selectorStyles.iconColor} />
                     </View>
                 </TouchableOpacity>
 

@@ -26,7 +26,7 @@ const PhaseText = ({ phase, timer }) => {
 
 const styles = StyleSheet.create({
     phaseText: {
-        fontSize: 40,
+        fontSize: 32,
         fontWeight: '600',
     },
 });

@@ -65,7 +65,7 @@ const NewScreen = () => {
                     timeMinutes={workoutValues.restTimeSetSeconds} setTimeMinutes={setters.setRestTimeSetSeconds}
                     timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={setters.setRestTimeMinutes} />
             </ScrollView>
-            <View style={[workoutStyles.buttonContainer, { justifyContent: "center", width: "auto" }]}>
+            <View style={[workoutStyles.buttonContainer, { justifyContent: "center" }]}>
                 <SaveWorkoutButton onPress={handleSave} text={"Save as workout"} />
             </View>
         </View>

@@ -58,9 +58,9 @@ const TimerScreen = () => {
                     ]}
                 >
                     {timer.isPaused() || timer.isStopped() ? (
-                        <Ionicons name="play" size={45} color="black" />
+                        <Ionicons name="play" size={40} color="black" />
                     ) : (
-                        <Ionicons name="pause" size={45} color="black" />
+                        <Ionicons name="pause" size={40} color="black" />
                     )}
                 </Pressable>
             </View>

@@ -21,10 +21,9 @@ export const MainHeaderRight = () => {
         <View>
             <Pressable
                 onPress={handleClick}
-                hitSlop={{ top: 25, bottom: 25, left: 25, right: 25 }}
                 style={({ pressed }) => [{
                     opacity: pressed ? 0.5 : 1.0,
-                    padding: 10
+                    padding: 11,
                 }
                 ]}>
                 <Ionicons name="settings-outline" size={32} color="black" />

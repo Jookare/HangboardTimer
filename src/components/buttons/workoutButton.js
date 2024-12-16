@@ -14,7 +14,7 @@ const WorkoutButton = ({ color, borderColor, iconBG, navID, onPress, text, iconN
             }]}
             onPress={() => onPress(navID)}>
             <View style={[mainButtonStyle.iconContainer, { backgroundColor: iconBG }]}>
-                <Ionicons name={iconName} size={24} color="black" />
+                <Ionicons name={iconName} size={20} color="black" />
             </View>
             <Text style={mainButtonStyle.buttonText}>{text}</Text>
         </Pressable>

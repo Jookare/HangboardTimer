@@ -32,6 +32,7 @@ export const workoutStyles = StyleSheet.create({
         width: "100%",
         paddingVertical: 20,
         alignItems: 'center',
+        gap: 4
     },
     text: {
         marginTop: 8,
@@ -43,9 +44,11 @@ export const workoutStyles = StyleSheet.create({
     buttonContainer: {
         flexDirection: "row",
         paddingHorizontal: 20,
-        marginBottom: 20,
+        paddingVertical: 10,
         width: "100%",
         alignItems: "center",
+        borderTopWidth: 1,
+        borderTopColor: "#e7e7e7",
     },
     input: {
         color: '#313131',

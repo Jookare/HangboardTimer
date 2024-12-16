@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-nativ
 import { selectorStyles, workoutStyles } from './styles';
 import { Entypo } from '@expo/vector-icons';
 
-// Functional component for Time Selector
 
 // Functional component for Time Selector
 export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTimeSeconds }) => {
@@ -60,12 +59,12 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
             <View style={[selectorStyles.row, selectorStyles.div]}>
                 <TouchableOpacity onPress={handleTimeDecrement}>
                     <View style={[selectorStyles.icon, selectorStyles.iconMinus]}>
-                        <Entypo name="minus" size={24} style={selectorStyles.iconColor} />
+                        <Entypo name="minus" size={20} style={selectorStyles.iconColor} />
                     </View>
                 </TouchableOpacity>
                 <View style={styles.inputDiv}>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'right', width: 50, height:50 }]}
+                        style={[selectorStyles.text, { textAlign: 'right', width: 40}]}
                         keyboardType="numeric"
                         maxLength={2}
                         value={tempMinutes}
@@ -75,7 +74,7 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                     />
                     <Text style={selectorStyles.text}>:</Text>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'left', width: 50, height:50 }]}
+                        style={[selectorStyles.text, { textAlign: 'left', width: 40 }]}
                         keyboardType="numeric"
                         maxLength={2}
                         value={tempSeconds}
@@ -86,7 +85,7 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                 </View>
                 <TouchableOpacity onPress={handleTimeIncrement}>
                     <View style={[selectorStyles.icon, selectorStyles.iconPlus]}>
-                        <Entypo name="plus" size={24} style={selectorStyles.iconColor} />
+                        <Entypo name="plus" size={20} style={selectorStyles.iconColor} />
                     </View>
                 </TouchableOpacity>
             </View>

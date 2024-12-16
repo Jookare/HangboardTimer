@@ -104,7 +104,7 @@ const SettingsScreen = () => {
 				</View>
 				<View style={styles.itemContainer}>
 					<Slider
-						value={prep}
+						value={prep | 5}
 						onValueChange={(val) => handlePrepChange(val)}
 						step={1}
 						minimumValue={0}

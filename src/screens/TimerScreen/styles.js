@@ -4,10 +4,11 @@ import { palette } from '../../utils/palette';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
         backgroundColor: palette.white,
-        gap: 20,
+        paddingVertical: 120,
+        gap: 10,
     },
     titleContainer: {
         position: "absolute",
@@ -42,61 +43,31 @@ export const styles = StyleSheet.create({
         justifyContent: "space-evenly"
     },
     repsetContainer: {
-
         borderRadius: 20,
-        width: 120,
-        height: 100,
+        width: 110,
+        height: 90,
         textAlign: "center",
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 2,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
         borderColor: "#e7e7e7",
-
-
     },
     repsetText: {
         fontSize: 20,
         fontWeight: "600"
     },
-    pauseButtonContainer: {
-        position: "absolute",
-        bottom: 130,
+    pauseButtonContainer:{
     },
     pauseButton: {
         borderRadius: 100,
-        width: 120,
-        height: 120,
+        width: 100,
+        height: 100,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
         borderWidth: 2,
         borderColor: "#e7e7e7",
-    },
-    buttonContainer: {
-        position: "absolute",
-        flexDirection: "row",
-        bottom: 0,
-        height: 100,
-        width: "100%",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-        backgroundColor: "#fff",
-        borderTopColor: "#e7e7e7",
-        borderTopWidth: 2
-    },
-    button: {
-        borderRadius: 100,
-        width: 80,
-        height: 80,
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        borderWidth: 2,
-        borderColor: "#e7e7e7",
-    },
-    buttonText: {
-        color: "black",
     }
 });

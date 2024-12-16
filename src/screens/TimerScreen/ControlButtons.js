@@ -21,7 +21,7 @@ const ControlButtons = ({
             >
                 <Ionicons
                     name="play-back"
-                    size={24}
+                    size={20}
                     style={{ color: previousFlag() ? '#949396' : '#000000' }}
                 />
                 <Text style={{ color: previousFlag() ? '#949396' : '#000000' }}>
@@ -39,7 +39,7 @@ const ControlButtons = ({
             >
                 <Ionicons
                     name="play-forward"
-                    size={24}
+                    size={20}
                     style={{ color: nextFlag() ? '#949396' : '#000000' }}
                 />
                 <Text style={{ color: nextFlag() ? '#949396' : '#000000' }}>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         flexDirection: 'row',
         bottom: 0,
-        height: 100,
+        height: 120,
         width: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',

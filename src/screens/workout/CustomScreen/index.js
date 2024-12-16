@@ -99,7 +99,7 @@ const CustomScreen = () => {
                     timeMinutes={workoutValues.restTimeSetSeconds} setTimeMinutes={setters.setRestTimeSetSeconds}
                     timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={setters.setRestTimeMinutes} />
             </ScrollView>
-            <View style={[workoutStyles.buttonContainer, { justifyContent: "space-between" }]}>
+            <View style={[workoutStyles.buttonContainer, { justifyContent: "space-evenly" }]}>
                 <SaveButton onPress={createSaveButtonAlert} />
                 <StartButton onPress={handleNavigation} />
                 <RemoveButton onPress={createRemoveButtonAlert} />
