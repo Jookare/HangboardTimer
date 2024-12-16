@@ -3,7 +3,7 @@ import { palette } from '../../utils/palette';
 
 export const mainButtonStyle = StyleSheet.create({
     button: {
-        padding: 12,
+        padding: 15,
         borderRadius: 20,
         marginBottom: 15,
         width: "80%",
@@ -44,7 +44,7 @@ export const startButtonStyle = StyleSheet.create({
 
 export const sideButtonStyle = StyleSheet.create({
     sideButton: {
-        width: 65,
+        width: 80,
         aspectRatio: 1,
         borderRadius: 75,
         alignItems: "center",

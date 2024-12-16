@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native';
 
 export const selectorStyles = StyleSheet.create({
     icon: {
-        width: 40,
-        height: 40,
+        width: 50,
+        height: 50,
         fontSize: 30,
         color: "#020202",
         alignItems: "center",
@@ -30,7 +30,7 @@ export const selectorStyles = StyleSheet.create({
         borderColor: "#565364",
         borderWidth: 2,
         borderRadius: 50,
-        height: 65,
+        height: 70,
         padding: 8,
         backgroundColor: "#fff",
     },

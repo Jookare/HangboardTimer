@@ -13,15 +13,14 @@ export const workoutStyles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        gap: 20,
         width: "90%",
         marginTop: 20
     },
     title: {
         color: '#313131',
         fontWeight: "600",
-        fontSize: 36,
-        marginBottom: 20
+        fontSize: 32,
+        marginBottom: 10
     },
     container: {
         width: "100%",
@@ -32,7 +31,7 @@ export const workoutStyles = StyleSheet.create({
         width: "100%",
         paddingVertical: 20,
         alignItems: 'center',
-        gap: 4
+        gap: 2
     },
     text: {
         marginTop: 8,
@@ -44,7 +43,7 @@ export const workoutStyles = StyleSheet.create({
     buttonContainer: {
         flexDirection: "row",
         paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingVertical: 8,
         width: "100%",
         alignItems: "center",
         borderTopWidth: 1,

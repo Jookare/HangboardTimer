@@ -43,7 +43,7 @@ const NewScreen = () => {
                     placeholderTextColor="#8d8d8d"
                     editable={true}
                 />
-                <Ionicons name="pencil" size={40} color="#555555" />
+                <Ionicons name="pencil" size={32} color="#555555" />
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>

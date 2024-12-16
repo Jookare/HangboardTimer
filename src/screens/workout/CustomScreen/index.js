@@ -77,7 +77,7 @@ const CustomScreen = () => {
                     placeholderTextColor="#8d8d8d"
                     editable={true}
                 />
-                <Ionicons name="pencil" size={40} color="#313131" />
+                <Ionicons name="pencil" size={32} color="#313131" />
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>
@@ -99,7 +99,7 @@ const CustomScreen = () => {
                     timeMinutes={workoutValues.restTimeSetSeconds} setTimeMinutes={setters.setRestTimeSetSeconds}
                     timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={setters.setRestTimeMinutes} />
             </ScrollView>
-            <View style={[workoutStyles.buttonContainer, { justifyContent: "space-evenly" }]}>
+            <View style={[workoutStyles.buttonContainer, { justifyContent: "center" }]}>
                 <SaveButton onPress={createSaveButtonAlert} />
                 <StartButton onPress={handleNavigation} />
                 <RemoveButton onPress={createRemoveButtonAlert} />

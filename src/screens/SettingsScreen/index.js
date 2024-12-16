@@ -26,6 +26,7 @@ const SettingsScreen = () => {
 
 	useFocusEffect(
 		React.useCallback(() => {
+			setPrep(5);
 			fetchItems();
 		}, [])
 	);
@@ -104,7 +105,7 @@ const SettingsScreen = () => {
 				</View>
 				<View style={styles.itemContainer}>
 					<Slider
-						value={prep | 5}
+						value={prep}
 						onValueChange={(val) => handlePrepChange(val)}
 						step={1}
 						minimumValue={0}
@@ -118,6 +119,7 @@ const SettingsScreen = () => {
 						style={({ pressed }) => [{
 							opacity: pressed ? 0.5 : 1.0,
 							height: 50,
+							padding: 5
 						}, styles.center
 						]}>
 						<View style={[{ flexDirection: "row" }, styles.center]}>
@@ -130,7 +132,7 @@ const SettingsScreen = () => {
 				</View>
 
 			</View>
-			<Text style={styles.heading}>App version V.1.1.1</Text>
+			<Text style={styles.heading}>App version V.1.1.3</Text>
 		</View>
 	)
 }

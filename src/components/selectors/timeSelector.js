@@ -74,7 +74,7 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                     />
                     <Text style={selectorStyles.text}>:</Text>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'left', width: 40 }]}
+                        style={[selectorStyles.text, { textAlign: 'left', width: 40}]}
                         keyboardType="numeric"
                         maxLength={2}
                         value={tempSeconds}
