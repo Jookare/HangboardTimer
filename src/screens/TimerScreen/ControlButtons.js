@@ -24,7 +24,7 @@ const ControlButtons = ({
                     size={20}
                     style={{ color: previousFlag() ? '#949396' : '#000000' }}
                 />
-                <Text style={{ color: previousFlag() ? '#949396' : '#000000' }}>
+                <Text style={{ fontSize: 16, color: previousFlag() ? '#949396' : '#000000' }}>
                     REP
                 </Text>
             </Pressable>
@@ -42,7 +42,7 @@ const ControlButtons = ({
                     size={20}
                     style={{ color: nextFlag() ? '#949396' : '#000000' }}
                 />
-                <Text style={{ color: nextFlag() ? '#949396' : '#000000' }}>
+                <Text style={{fontSize: 16, color: nextFlag() ? '#949396' : '#000000' }}>
                     REP
                 </Text>
             </Pressable>

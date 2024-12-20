@@ -29,7 +29,6 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
     const { mins, secs, tenths } = getRemaining(time);
     const { playSound } = useSounds();
 
-
     const handleSetTime = (value) => {
         setTime(value * 10);
     };
@@ -58,15 +57,28 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
     }, [time]);
 
     const handlePhaseTransition = () => {
-        if (playSoundEnabled) {
-            if (currentPhase === PHASES.COUNTDOWN && time === 0) {
-                playSound('start');
-            } else if (currentPhase === PHASES.HANG && time === 0) {
-                playSound('end');
+        console.log(time)
+        if (playSoundEnabled && (currentPhase === PHASES.REST_AFTER_HANG || currentPhase === PHASES.COUNTDOWN)) {
+            if (time === 30) {
+                console.log("TIME == 3")
+                playSound('ready');
+            }
+            else if (time === 20) {
+                playSound('ready');
+            }
+            else if (time === 10) {
+                playSound('ready');
             }
         }
 
         if (time <= 0) {
+            if (playSoundEnabled) {
+                if (currentPhase === PHASES.COUNTDOWN || currentPhase === PHASES.REST_AFTER_HANG) {
+                    playSound('start');
+                } else if (currentPhase === PHASES.HANG) {
+                    playSound('end');
+                }
+            }
             transitionToNextPhase();
         }
     };
@@ -129,6 +141,9 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
                     handleSetTime(restAfterSet);
                     setRepsLeft(reps);
                 } else {
+                    setSetsLeft(0);
+                    setRepsLeft(0);
+                    timer.stop();
                     setCurrentPhase(PHASES.COMPLETE);
                 }
                 break;
@@ -142,9 +157,6 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
                 break;
             case PHASES.COMPLETE:
                 handleSetTime(null);
-                timer.stop();
-                setSetsLeft(0);
-                setRepsLeft(0);
                 break;
             default:
                 console.error(`Unexpected phase: ${currentPhase}`);
@@ -207,7 +219,7 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
                 setCurrentPhase(PHASES.HANG);
                 handleSetTime(hangTime);
             }
-            if ((repsLeft - 1 === 0 || repsLeft === 0) && (setsLeft - 1 === 0 || setsLeft === 0)) {
+            if ((repsLeft - 1 === 0 || repsLeft === 0) && (setsLeft - 1 === 0)) {
                 setCurrentPhase(PHASES.COMPLETE);
                 handleSetTime(null);
                 setSetsLeft(0);

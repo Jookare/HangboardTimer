@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
         borderColor: "#e7e7e7",
     },
     repsetText: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: "600"
     },
     pauseButtonContainer:{
