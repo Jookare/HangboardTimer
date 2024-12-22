@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
         top: 60,
     },
     titleText: {
-        fontSize: 40,
+        fontSize: 32,
         fontWeight: "800"
     },
     timerContainer: {
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
         borderColor: "#e7e7e7",
     },
     timerText: {
-        fontSize: 80,
+        fontSize: 72,
         fontWeight: 'bold',
     },
     phaseContainer: {

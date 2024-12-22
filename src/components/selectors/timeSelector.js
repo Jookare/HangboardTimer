@@ -20,7 +20,6 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
     const updateTime = (totalSeconds) => {
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = totalSeconds % 60;
-        console.log("totalSeconds", totalSeconds);
         if (totalSeconds >= 5940) {
             minutes = 99;
             if (totalSeconds >= 5999) {

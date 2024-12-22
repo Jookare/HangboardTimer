@@ -14,21 +14,25 @@ export const MainHeaderTitle = () => {
 export const MainHeaderRight = () => {
     const navigation = useNavigation();
 
-    const handleClick = () => {
-        navigation.navigate("Settings");
-    }
+    function handleClick() {
+        try {
+            navigation.navigate("Settings");
+            console.log("Opening Settings")
+        } catch (error) {
+            console.error("Navigation to Settings failed:", error);
+        }
+    };
+
     return (
-        <View style={{ zIndex: 10 }}>
-            <Pressable
-                onPress={handleClick}
-                hitSlop={10} // Adds 10 pixels of touchable padding around the component
-                style={({ pressed }) => [{
-                    opacity: pressed ? 0.5 : 1.0,
-                    padding: 11,
-                }
-                ]}>
-                <Ionicons name="settings-outline" size={32} color="black" />
-            </Pressable>
-        </View>
+        <Pressable
+            onPress={handleClick}
+            hitSlop={20} // Adds 10 pixels of touchable padding around the component
+            style={({ pressed }) => [{
+                opacity: pressed ? 0.5 : 1.0,
+                padding: 11,
+            }
+            ]}>
+            <Ionicons name="settings-outline" size={32} color="black" />
+        </Pressable>
     )
 }

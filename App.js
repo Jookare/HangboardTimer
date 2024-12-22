@@ -74,7 +74,6 @@ const App = () => {
             }} />
             <Stack.Screen name="Settings" component={SettingsScreen} options={{
               headerTitleAlign: "center",
-              presentation: "modal",
               headerTitleStyle: {
                 fontSize: 20,
               },

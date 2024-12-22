@@ -13,7 +13,7 @@ export const NumberSelector = ({ value, setValue, selectorType }) => {
     };
 
     const handleIncrement = (valueSetter) => {
-        valueSetter((prevValue) => (prevValue < 100 ? prevValue + 1 : prevValue));
+        valueSetter((prevValue) => (prevValue < 99 ? prevValue + 1 : prevValue));
     };
     
     const increase = `${selectorType} increase`;

@@ -28,6 +28,7 @@ const SettingsScreen = () => {
 
 	useFocusEffect(
 		React.useCallback(() => {
+			console.log("Here");
 			fetchItems();
 		}, [])
 	);
