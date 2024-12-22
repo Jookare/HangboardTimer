@@ -18,7 +18,7 @@
         "backgroundColor": "#EF5452"
       },
       "package": "com.jookare.HangboardTimer",
-      "versionCode": 9,
+      "versionCode": 10,
       "permissions": ["android.permission.MODIFY_AUDIO_SETTINGS"]
     },
     "web": {

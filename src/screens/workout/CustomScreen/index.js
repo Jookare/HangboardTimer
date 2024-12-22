@@ -79,69 +79,46 @@ const CustomScreen = () => {
                 />
                 <Ionicons name="pencil" size={32} color="#313131" />
             </View>
-            <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}
-                accessibilityLabel="Workout settings scrollable list">
-                <Text
-                    style={workoutStyles.text}
-                    accessibilityLabel="Label for sets selector"
-                >
-                    Sets
-                </Text>
+            <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
+                <Text style={workoutStyles.text}>Sets</Text>
                 <NumberSelector
                     value={workoutValues.sets}
                     setValue={setters.setSets}
-                    accessibilityLabel={`Number selector for sets, current value is ${workoutValues.sets}`}
+                    selectorType={"sets"}
                 />
 
-                <Text
-                    style={workoutStyles.text}
-                    accessibilityLabel="Label for reps selector"
-                >
-                    Reps
-                </Text>
+                <Text style={workoutStyles.text}>Reps</Text>
                 <NumberSelector
                     value={workoutValues.reps}
                     setValue={setters.setReps}
-                    accessibilityLabel={`Number selector for reps, current value is ${workoutValues.reps}`}
+                    selectorType={"reps"}
                 />
-                <Text
-                    style={workoutStyles.text}
-                    accessibilityLabel="Label for hang time selector"
-                >
-                    Hang time
-                </Text>
+
+                <Text style={workoutStyles.text}>Hang time</Text>
                 <TimeSelector
                     timeSeconds={workoutValues.hangtimeSeconds}
                     setTimeSeconds={setters.setHangtimeSeconds}
                     timeMinutes={workoutValues.hangtimeMinutes}
                     setTimeMinutes={setters.setHangtimeMinutes}
-                    accessibilityLabel={`Time selector for hang time. Minutes: ${workoutValues.hangtimeMinutes}, Seconds: ${workoutValues.hangtimeSeconds}`}
+                    selectorType={"hang time"}
                 />
 
-                <Text
-                    style={workoutStyles.text}
-                    accessibilityLabel="Label for rest time after hang selector"
-                >
-                    Rest time between reps
-                </Text>
+                <Text style={workoutStyles.text}>Rest time between reps</Text>
                 <TimeSelector
                     timeSeconds={workoutValues.restTimeSeconds}
                     setTimeSeconds={setters.setRestTimeSeconds}
                     timeMinutes={workoutValues.restTimeMinutes}
                     setTimeMinutes={setters.setRestTimeMinutes}
-                    accessibilityLabel={`Time selector for rest time after hang. Minutes: ${workoutValues.restTimeSeconds}, Seconds: ${workoutValues.restTimeMinutes}`}
+                    selectorType={"rest between reps"}
                 />
-                <Text
-                    style={workoutStyles.text}
-                    accessibilityLabel="Label for rest time between sets selector">
-                    Rest time between sets
-                </Text>
+
+                <Text style={workoutStyles.text}>Rest time between sets</Text>
                 <TimeSelector
                     timeSeconds={workoutValues.restTimeSetSeconds}
                     setTimeSeconds={setters.setRestTimeSetSeconds}
                     timeMinutes={workoutValues.restTimeSetMinutes}
                     setTimeMinutes={setters.setRestTimeSetMinutes}
-                    accessibilityLabel={`Time selector for rest time between sets. Minutes: ${workoutValues.restTimeSetSeconds}, Seconds: ${workoutValues.restTimeSetMinutes}`}
+                    selectorType={"rest between sets"}
                 />
             </ScrollView>
             <View style={[workoutStyles.buttonContainer, { justifyContent: "center" }]}>

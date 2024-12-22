@@ -6,7 +6,7 @@ import { Entypo } from '@expo/vector-icons';
 
 
 // Functional component for Time Selector
-export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTimeSeconds }) => {
+export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTimeSeconds, selectorType }) => {
     // Temporary state for inputs to prevent UI jitter
     console.log(timeMinutes);
     console.log(timeSeconds);
@@ -21,9 +21,9 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = totalSeconds % 60;
         console.log("totalSeconds", totalSeconds);
-        if (totalSeconds >= 5940){
+        if (totalSeconds >= 5940) {
             minutes = 99;
-            if (totalSeconds >= 5999){
+            if (totalSeconds >= 5999) {
                 seconds = 59;
             }
         }
@@ -64,36 +64,46 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
         }
     };
 
+
+    // Accessibility labels based on selectorType
+    const minutesLabel = `${selectorType} minutes input`;
+    const secondsLabel = `${selectorType} seconds input`;
+    const SecondsIncrease = `${selectorType} increase`;
+    const SecondsDecrease = `${selectorType} decrease`;
+
+
     return (
         <View style={selectorStyles.container}>
             <View style={[selectorStyles.row, selectorStyles.div]}>
-                <TouchableOpacity onPress={handleTimeDecrement}>
+                <TouchableOpacity onPress={handleTimeDecrement} accessibilityLabel={SecondsDecrease}>
                     <View style={[selectorStyles.icon, selectorStyles.iconMinus]}>
                         <Entypo name="minus" size={20} style={selectorStyles.iconColor} />
                     </View>
                 </TouchableOpacity>
                 <View style={styles.inputDiv}>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'right', height: 50, width: 50}]}
+                        style={[selectorStyles.text, { textAlign: 'right', height: 50, width: 50 }]}
                         keyboardType="numeric"
                         maxLength={2}
                         value={tempMinutes}
                         onChangeText={(text) => handleInputChange(text, 'minutes')}
                         onSubmitEditing={handleSubmitEditing}
                         onBlur={handleSubmitEditing} // Ensure changes are saved
+                        accessibilityLabel={minutesLabel}
                     />
                     <Text style={selectorStyles.text}>:</Text>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'left', height: 50, width: 50}]}
+                        style={[selectorStyles.text, { textAlign: 'left', height: 50, width: 50 }]}
                         keyboardType="numeric"
                         maxLength={2}
                         value={tempSeconds}
                         onChangeText={(text) => handleInputChange(text, 'seconds')}
                         onSubmitEditing={handleSubmitEditing}
                         onBlur={handleSubmitEditing} // Ensure changes are saved
+                        accessibilityLabel={secondsLabel}
                     />
                 </View>
-                <TouchableOpacity onPress={handleTimeIncrement}>
+                <TouchableOpacity onPress={handleTimeIncrement} accessibilityLabel={SecondsIncrease}>
                     <View style={[selectorStyles.icon, selectorStyles.iconPlus]}>
                         <Entypo name="plus" size={20} style={selectorStyles.iconColor} />
                     </View>

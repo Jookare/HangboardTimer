@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-nativ
 import { selectorStyles } from './styles'
 import { Entypo } from '@expo/vector-icons';
 // Functional component for Max Hangs
-export const NumberSelector = ({ value, setValue }) => {
+export const NumberSelector = ({ value, setValue, selectorType }) => {
 
     // const [sets, setSets] = useState(3);
 
@@ -13,22 +13,23 @@ export const NumberSelector = ({ value, setValue }) => {
     };
 
     const handleIncrement = (valueSetter) => {
-
-            valueSetter((prevValue) =>  (prevValue < 100 ? prevValue + 1 : prevValue));
-        
+        valueSetter((prevValue) => (prevValue < 100 ? prevValue + 1 : prevValue));
     };
+    
+    const increase = `${selectorType} increase`;
+    const decrease = `${selectorType} decrease`;
 
     return (
         <View style={selectorStyles.container}>
             {/* Sets Selector */}
             <View style={[selectorStyles.row, selectorStyles.div]}  >
-                <TouchableOpacity onPress={() => handleDecrement(setValue)}>
+                <TouchableOpacity onPress={() => handleDecrement(setValue)} accessibilityLabel={decrease}>
                     <View style={[selectorStyles.icon, selectorStyles.iconMinus]}>
                         <Entypo name="minus" size={20} style={selectorStyles.iconColor} />
                     </View>
                 </TouchableOpacity>
                 <Text style={selectorStyles.text}>{value}</Text>
-                <TouchableOpacity onPress={() => handleIncrement(setValue)}>
+                <TouchableOpacity onPress={() => handleIncrement(setValue)} accessibilityLabel={increase}>
                     <View style={[selectorStyles.icon, selectorStyles.iconPlus]}>
                         <Entypo name="plus" size={20} style={selectorStyles.iconColor} />
                     </View>

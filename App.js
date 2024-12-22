@@ -16,8 +16,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { toast, Toasts } from '@backpackapp-io/react-native-toast';
 
-
-
 const Stack = createNativeStackNavigator();
 const disableFontScaling = () => {
   Text.defaultProps = {
