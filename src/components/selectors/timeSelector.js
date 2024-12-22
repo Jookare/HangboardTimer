@@ -65,8 +65,6 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
 
 
     // Accessibility labels based on selectorType
-    const minutesLabel = `${selectorType} minutes input`;
-    const secondsLabel = `${selectorType} seconds input`;
     const SecondsIncrease = `${selectorType} increase`;
     const SecondsDecrease = `${selectorType} decrease`;
 
@@ -88,7 +86,6 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                         onChangeText={(text) => handleInputChange(text, 'minutes')}
                         onSubmitEditing={handleSubmitEditing}
                         onBlur={handleSubmitEditing} // Ensure changes are saved
-                        accessibilityLabel={minutesLabel}
                     />
                     <Text style={selectorStyles.text}>:</Text>
                     <TextInput
@@ -99,7 +96,6 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                         onChangeText={(text) => handleInputChange(text, 'seconds')}
                         onSubmitEditing={handleSubmitEditing}
                         onBlur={handleSubmitEditing} // Ensure changes are saved
-                        accessibilityLabel={secondsLabel}
                     />
                 </View>
                 <TouchableOpacity onPress={handleTimeIncrement} accessibilityLabel={SecondsIncrease}>
