@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-nativ
 import { selectorStyles } from './styles'
 import { Entypo } from '@expo/vector-icons';
 // Functional component for Max Hangs
-export const NumberSelector = ({ value, setValue }) => { 
+export const NumberSelector = ({ value, setValue }) => {
 
     // const [sets, setSets] = useState(3);
 
@@ -13,7 +13,9 @@ export const NumberSelector = ({ value, setValue }) => {
     };
 
     const handleIncrement = (valueSetter) => {
-        valueSetter((prevValue) => prevValue + 1);
+
+            valueSetter((prevValue) =>  (prevValue < 100 ? prevValue + 1 : prevValue));
+        
     };
 
     return (

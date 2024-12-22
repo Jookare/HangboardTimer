@@ -49,21 +49,6 @@ const TimerScreen = () => {
                     <Text style={styles.repsetText}>{repsLeft}</Text>
                 </View>
             </View>
-            <View style={styles.pauseButtonContainer}>
-                <Pressable
-                    onPress={toggle}
-                    style={({ pressed }) => [
-                        { opacity: pressed ? 0.9 : 1.0 },
-                        styles.pauseButton,
-                    ]}
-                >
-                    {timer.isPaused() || timer.isStopped() ? (
-                        <Ionicons name="play" size={40} color="black" />
-                    ) : (
-                        <Ionicons name="pause" size={40} color="black" />
-                    )}
-                </Pressable>
-            </View>
             <ControlButtons
                 toggle={toggle}
                 previousRep={previousRep}

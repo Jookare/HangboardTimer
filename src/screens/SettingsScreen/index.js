@@ -17,16 +17,17 @@ const SettingsScreen = () => {
 	const [audio, setAudio] = useState(false);
 
 	const fetchItems = async () => {
-		const audio2 = await getItem("@audio");
-		const prep2 = await getItem("@preparation");
-		console.log(prep2);
+		let audio2 = await getItem("@audio");
+		let prep2 = await getItem("@preparation");
+		// Fallback to default if prep2 is null or invalid
+		prep2 = prep2 !== null ? JSON.parse(prep2) : 5;
+
 		setAudio(audio2);
 		setPrep(prep2);
 	}
 
 	useFocusEffect(
 		React.useCallback(() => {
-			setPrep(5);
 			fetchItems();
 		}, [])
 	);
@@ -48,7 +49,7 @@ const SettingsScreen = () => {
 				setDebouncedPrep(prep);
 				saveItem("@preparation", JSON.stringify(prep));
 			}
-		}, 100);
+		}, 10);
 
 		return () => clearTimeout(delayDebounceFn);
 	}, [prep]);
@@ -132,7 +133,7 @@ const SettingsScreen = () => {
 				</View>
 
 			</View>
-			<Text style={styles.heading}>App version V.1.1.3</Text>
+			<Text style={styles.heading}>App version V.1.1.5</Text>
 		</View>
 	)
 }

@@ -18,9 +18,10 @@ export const MainHeaderRight = () => {
         navigation.navigate("Settings");
     }
     return (
-        <View>
+        <View style={{ zIndex: 10 }}>
             <Pressable
                 onPress={handleClick}
+                hitSlop={10} // Adds 10 pixels of touchable padding around the component
                 style={({ pressed }) => [{
                     opacity: pressed ? 0.5 : 1.0,
                     padding: 11,

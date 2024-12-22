@@ -8,6 +8,8 @@ import { Entypo } from '@expo/vector-icons';
 // Functional component for Time Selector
 export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTimeSeconds }) => {
     // Temporary state for inputs to prevent UI jitter
+    console.log(timeMinutes);
+    console.log(timeSeconds);
     const [tempMinutes, setTempMinutes] = useState(timeMinutes);
     const [tempSeconds, setTempSeconds] = useState(timeSeconds);
 
@@ -16,8 +18,16 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
 
     // Update time values based on total seconds
     const updateTime = (totalSeconds) => {
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+        console.log("totalSeconds", totalSeconds);
+        if (totalSeconds >= 5940){
+            minutes = 99;
+            if (totalSeconds >= 5999){
+                seconds = 59;
+            }
+        }
+
         setTimeMinutes(formattedNumber(minutes));
         setTimeSeconds(formattedNumber(seconds));
         setTempMinutes(formattedNumber(minutes));

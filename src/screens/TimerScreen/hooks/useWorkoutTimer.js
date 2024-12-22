@@ -26,6 +26,8 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
     const [appState, setAppState] = useState(AppState.currentState);
 
 
+    const [timerOn, setTimerOn] = useState(false)
+
     const { mins, secs, tenths } = getRemaining(time);
     const { playSound } = useSounds();
 
@@ -40,9 +42,11 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
     const timer = useTimer({ delay: 100 }, handleTimerCallback);
 
     const fetchSettings = async () => {
-        const prep = await getItem('@preparation');
-        const play = await getItem('@audio');
-        setPreparation(Number(prep) || 5);
+        let prep = await getItem('@preparation');
+        let play = await getItem('@audio');
+
+        prep = prep !== null ? JSON.parse(prep) : 5;
+        setPreparation(prep);
         setPlaySoundEnabled(play);
     };
 
@@ -98,16 +102,18 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
 
     const onAppStateChange = useCallback(
         (nextAppState) => {
-            if (appState === 'active' && nextAppState.match(/inactive|background/)) {
-                timer.pause()
-            } else if (
-                appState.match(/inactive|background/) &&
-                nextAppState === 'active'
-            ) {
-                restartTimer()
-            }
+            if (timerOn) {
+                if (appState === 'active' && nextAppState.match(/inactive|background/)) {
+                    timer.pause()
+                } else if (
+                    appState.match(/inactive|background/) &&
+                    nextAppState === 'active'
+                ) {
+                    restartTimer()
+                }
 
-            setAppState(nextAppState)
+                setAppState(nextAppState)
+            }
         },
         [appState, restartTimer],
     )
@@ -168,13 +174,19 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
         if (currentPhase !== PHASES.COMPLETE) {
             if (timer.isStopped()) {
                 if (currentPhase !== PHASES.REST_BETWEEN_SETS) {
-                    handleSetTime(preparation);
-                    setCurrentPhase(PHASES.COUNTDOWN);
+                    if (preparation !== 0){
+
+                        handleSetTime(preparation);
+                        setCurrentPhase(PHASES.COUNTDOWN);
+                    }
                 }
+                setTimerOn(true);
                 timer.start();
             } else if (timer.isPaused()) {
+                setTimerOn(true);
                 timer.resume();
             } else {
+                setTimerOn(false);
                 timer.pause();
             }
         }

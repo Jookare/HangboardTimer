@@ -79,25 +79,70 @@ const CustomScreen = () => {
                 />
                 <Ionicons name="pencil" size={32} color="#313131" />
             </View>
-            <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
-                <Text style={workoutStyles.text}>Sets</Text>
-                <NumberSelector value={workoutValues.sets} setValue={setters.setSets} />
-                <Text style={workoutStyles.text}>Reps</Text>
-                <NumberSelector value={workoutValues.reps} setValue={setters.setReps} />
-                <Text style={workoutStyles.text}>Hang time</Text>
-                <TimeSelector
-                    timeMinutes={workoutValues.hangtimeMinutes} setTimeMinutes={setters.setHangtimeMinutes}
-                    timeSeconds={workoutValues.hangtimeSeconds} setTimeSeconds={setters.setHangtimeSeconds} />
+            <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}
+                accessibilityLabel="Workout settings scrollable list">
+                <Text
+                    style={workoutStyles.text}
+                    accessibilityLabel="Label for sets selector"
+                >
+                    Sets
+                </Text>
+                <NumberSelector
+                    value={workoutValues.sets}
+                    setValue={setters.setSets}
+                    accessibilityLabel={`Number selector for sets, current value is ${workoutValues.sets}`}
+                />
 
-                <Text style={workoutStyles.text}>Rest time after hang</Text>
+                <Text
+                    style={workoutStyles.text}
+                    accessibilityLabel="Label for reps selector"
+                >
+                    Reps
+                </Text>
+                <NumberSelector
+                    value={workoutValues.reps}
+                    setValue={setters.setReps}
+                    accessibilityLabel={`Number selector for reps, current value is ${workoutValues.reps}`}
+                />
+                <Text
+                    style={workoutStyles.text}
+                    accessibilityLabel="Label for hang time selector"
+                >
+                    Hang time
+                </Text>
                 <TimeSelector
-                    timeMinutes={workoutValues.restTimeSeconds} setTimeMinutes={setters.setRestTimeSeconds}
-                    timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={setters.setRestTimeMinutes} />
+                    timeSeconds={workoutValues.hangtimeSeconds}
+                    setTimeSeconds={setters.setHangtimeSeconds}
+                    timeMinutes={workoutValues.hangtimeMinutes}
+                    setTimeMinutes={setters.setHangtimeMinutes}
+                    accessibilityLabel={`Time selector for hang time. Minutes: ${workoutValues.hangtimeMinutes}, Seconds: ${workoutValues.hangtimeSeconds}`}
+                />
 
-                <Text style={workoutStyles.text}>Rest time between sets</Text>
+                <Text
+                    style={workoutStyles.text}
+                    accessibilityLabel="Label for rest time after hang selector"
+                >
+                    Rest time between reps
+                </Text>
                 <TimeSelector
-                    timeMinutes={workoutValues.restTimeSetSeconds} setTimeMinutes={setters.setRestTimeSetSeconds}
-                    timeSeconds={workoutValues.restTimeMinutes} setTimeSeconds={setters.setRestTimeMinutes} />
+                    timeSeconds={workoutValues.restTimeSeconds}
+                    setTimeSeconds={setters.setRestTimeSeconds}
+                    timeMinutes={workoutValues.restTimeMinutes}
+                    setTimeMinutes={setters.setRestTimeMinutes}
+                    accessibilityLabel={`Time selector for rest time after hang. Minutes: ${workoutValues.restTimeSeconds}, Seconds: ${workoutValues.restTimeMinutes}`}
+                />
+                <Text
+                    style={workoutStyles.text}
+                    accessibilityLabel="Label for rest time between sets selector">
+                    Rest time between sets
+                </Text>
+                <TimeSelector
+                    timeSeconds={workoutValues.restTimeSetSeconds}
+                    setTimeSeconds={setters.setRestTimeSetSeconds}
+                    timeMinutes={workoutValues.restTimeSetMinutes}
+                    setTimeMinutes={setters.setRestTimeSetMinutes}
+                    accessibilityLabel={`Time selector for rest time between sets. Minutes: ${workoutValues.restTimeSetSeconds}, Seconds: ${workoutValues.restTimeSetMinutes}`}
+                />
             </ScrollView>
             <View style={[workoutStyles.buttonContainer, { justifyContent: "center" }]}>
                 <SaveButton onPress={createSaveButtonAlert} />

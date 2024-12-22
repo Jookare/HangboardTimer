@@ -8,6 +8,7 @@ const ControlButtons = ({
     nextRep,
     previousFlag,
     nextFlag,
+    timer,
 }) => {
     return (
         <View style={styles.buttonContainer}>
@@ -28,6 +29,19 @@ const ControlButtons = ({
                     REP
                 </Text>
             </Pressable>
+            <Pressable
+                onPress={toggle}
+                style={({ pressed }) => [
+                    { opacity: pressed ? 0.9 : 1.0 },
+                    styles.pauseButton,
+                ]}
+            >
+                {timer.isPaused() || timer.isStopped() ? (
+                    <Ionicons name="play" size={40} color="black" />
+                ) : (
+                    <Ionicons name="pause" size={40} color="black" />
+                )}
+            </Pressable>
 
             <Pressable
                 style={({ pressed }) => [
@@ -42,7 +56,7 @@ const ControlButtons = ({
                     size={20}
                     style={{ color: nextFlag() ? '#949396' : '#000000' }}
                 />
-                <Text style={{fontSize: 16, color: nextFlag() ? '#949396' : '#000000' }}>
+                <Text style={{ fontSize: 16, color: nextFlag() ? '#949396' : '#000000' }}>
                     REP
                 </Text>
             </Pressable>
@@ -73,6 +87,17 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#e7e7e7',
     },
+    pauseButton: {
+        borderRadius: 100,
+        width: 100,
+        height: 100,
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        borderWidth: 2,
+        borderColor: "#e7e7e7",
+    }
 });
 
 export default ControlButtons;

@@ -4,7 +4,7 @@ import { palette } from '../../utils/palette';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'space-evenly',
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: palette.white,
         paddingVertical: 120,
@@ -13,10 +13,9 @@ export const styles = StyleSheet.create({
     titleContainer: {
         position: "absolute",
         top: 60,
-        marginBottom: 20
     },
     titleText: {
-        fontSize: 32,
+        fontSize: 40,
         fontWeight: "800"
     },
     timerContainer: {
@@ -56,18 +55,5 @@ export const styles = StyleSheet.create({
     repsetText: {
         fontSize: 24,
         fontWeight: "600"
-    },
-    pauseButtonContainer:{
-    },
-    pauseButton: {
-        borderRadius: 100,
-        width: 100,
-        height: 100,
-        backgroundColor: "rgba(255, 255, 255, 0.5)",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        borderWidth: 2,
-        borderColor: "#e7e7e7",
     }
 });
