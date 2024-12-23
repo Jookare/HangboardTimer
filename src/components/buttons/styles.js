@@ -14,7 +14,7 @@ export const mainButtonStyle = StyleSheet.create({
         alignSelf: "center"
     },
     buttonText: {
-        color: '#313131',
+        color: palette.black,
         fontSize: 16,
         fontWeight: 'bold',
     },
@@ -37,27 +37,27 @@ export const startButtonStyle = StyleSheet.create({
     },
     startButtonText: {
         fontSize: 20,
-        color: "#fff"
+        color: palette.white
     },
 })
 
 
 export const sideButtonStyle = StyleSheet.create({
     sideButton: {
-        width: 80,
+        width: 70,
         aspectRatio: 1,
         borderRadius: 75,
         alignItems: "center",
         justifyContent: "center",
     },
     saveButton: {
-        backgroundColor: "#f0fdf4",
+        backgroundColor: palette.greenBG,
         borderWidth: 2,
-        borderColor: "#dcfce7",
+        borderColor: palette.greenBorder,
     },
     removeButton: {
-        backgroundColor: "#fef2f2",
+        backgroundColor: palette.redBG,
         borderWidth: 2,
-        borderColor: "#fee2e2",
+        borderColor: palette.redBorder,
     }
 });

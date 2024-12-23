@@ -1,25 +1,26 @@
 
 import { StyleSheet } from 'react-native';
+import { palette } from '../../utils/palette';
 
 export const selectorStyles = StyleSheet.create({
     icon: {
         width: 50,
         height: 50,
         fontSize: 30,
-        color: "#020202",
+        color: palette.black,
         alignItems: "center",
         justifyContent: "center",
     },
     iconColor: {
-        color: "#000000",
+        color: palette.black,
     },
     iconPlus: {
         borderRadius: 100,
-        backgroundColor: "#86efac",
+        backgroundColor: palette.greenIconBG,
     },
     iconMinus: {
         borderRadius: 100,
-        backgroundColor: "#fca5a5",
+        backgroundColor: palette.redIconBG,
     },
     text: {
         fontSize: 20,
@@ -27,12 +28,12 @@ export const selectorStyles = StyleSheet.create({
     },
     div: {
         borderStyle: "solid",
-        borderColor: "#565364",
+        borderColor: palette.darkBorder,
         borderWidth: 2,
         borderRadius: 50,
         height: 70,
         padding: 8,
-        backgroundColor: "#fff",
+        backgroundColor: palette.white,
     },
     container: {
         justifyContent: 'center',

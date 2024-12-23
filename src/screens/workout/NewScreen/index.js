@@ -9,6 +9,7 @@ import { workoutStyles } from '../styles';
 import { getAllItems, saveItem, deleteItem } from '../../../utils/functions';
 import { Ionicons } from '@expo/vector-icons';
 import { SaveWorkoutButton } from '../../../components/buttons/startButton';
+import { palette } from '../../../utils/palette';
 
 const NewScreen = () => {
     const route = useRoute();
@@ -40,10 +41,10 @@ const NewScreen = () => {
                     onChangeText={onChangeWorkoutName}
                     placeholder='Workout name'
                     value={workoutName}
-                    placeholderTextColor="#8d8d8d"
+                    placeholderTextColor={palette.grayIconBG}
                     editable={true}
                 />
-                <Ionicons name="pencil" size={32} color="#555555" />
+                <Ionicons name="pencil" size={32}  color={palette.grayIconBG} />
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
 import { View, Text, Alert, TextInput, ScrollView } from 'react-native';
 import { NumberSelector } from '../../../components/selectors/numberSelector';
 import { TimeSelector } from '../../../components/selectors/timeSelector';
@@ -11,6 +10,7 @@ import { RemoveButton, SaveButton } from '../../../components/buttons/sideButton
 import { saveItem, deleteItem } from '../../../utils/functions';
 import { Ionicons } from '@expo/vector-icons';
 import { toast } from '@backpackapp-io/react-native-toast';
+import { palette } from '../../../utils/palette';
 
 const CustomScreen = () => {
     const route = useRoute();
@@ -30,7 +30,20 @@ const CustomScreen = () => {
         })
         await saveItem(id, stored);
         toast.success('Workout saved!', {
-            width: 300
+            width: 300,
+            styles: {
+                view: {
+                    backgroundColor: '#f7f7f7',
+                    borderRadius: 8,
+                    padding: 16,
+                },
+                text: {
+                    color: 'black',
+                },
+                indicator: {
+                    marginRight: 16,
+                },
+            },
         });
     }
 
@@ -38,7 +51,20 @@ const CustomScreen = () => {
         await deleteItem(id);
         navigation.navigate('Main');
         toast.success('Workout removed!', {
-            width: 300
+            width: 300,
+            styles: {
+                view: {
+                    backgroundColor: '#f7f7f7',
+                    borderRadius: 8,
+                    padding: 16,
+                },
+                text: {
+                    color: 'black',
+                },
+                indicator: {
+                    marginRight: 16,
+                },
+            },
         });
     }
 
@@ -74,10 +100,10 @@ const CustomScreen = () => {
                     onChangeText={onChangeWorkoutName}
                     placeholder='Workout name'
                     value={workoutName}
-                    placeholderTextColor="#8d8d8d"
+                    placeholderTextColor={palette.grayBorder}
                     editable={true}
                 />
-                <Ionicons name="pencil" size={32} color="#313131" />
+                <Ionicons name="pencil" size={32} color={palette.dark} />
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>

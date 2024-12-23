@@ -8,8 +8,7 @@ import { Entypo } from '@expo/vector-icons';
 // Functional component for Time Selector
 export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTimeSeconds, selectorType }) => {
     // Temporary state for inputs to prevent UI jitter
-    console.log(timeMinutes);
-    console.log(timeSeconds);
+    
     const [tempMinutes, setTempMinutes] = useState(timeMinutes);
     const [tempSeconds, setTempSeconds] = useState(timeSeconds);
 

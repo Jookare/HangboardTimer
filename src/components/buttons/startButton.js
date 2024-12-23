@@ -26,8 +26,8 @@ export const SaveWorkoutButton = ({ onPress }) => {
             ]}
             onPress={onPress}>
 
-            <Ionicons name="save-outline" size={20} color="white" />
             <Text style={startButtonStyle.startButtonText}>Save as workout</Text>
+            <Ionicons name="save-outline" size={26} color="white" />
         </Pressable>
     )
 }

@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: palette.white,
-        paddingVertical: 120,
         gap: 10,
     },
     titleContainer: {
@@ -22,8 +21,8 @@ export const styles = StyleSheet.create({
         borderRadius: 40,
         padding: 20,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
-        borderWidth: 2,
-        borderColor: "#e7e7e7",
+        borderWidth: 3,
+        borderColor: palette.grayBorder,
     },
     timerText: {
         fontSize: 72,
@@ -50,7 +49,7 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         borderWidth: 2,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
-        borderColor: "#e7e7e7",
+        borderColor: palette.grayBorder,
     },
     repsetText: {
         fontSize: 24,

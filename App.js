@@ -7,7 +7,6 @@ import { Text, TextInput, StyleSheet } from 'react-native';
 import MainScreen from './src/screens/index';
 import { MainHeaderTitle, MainHeaderRight } from './src/navigation/headers';
 import WorkoutScreen from './src/screens/workout/WorkoutScreen';
-import EnduranceScreen from './src/screens/EnduranceScreen';
 import CustomScreen from './src/screens/workout/CustomScreen';
 import NewScreen from './src/screens/workout/NewScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
@@ -17,6 +16,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { toast, Toasts } from '@backpackapp-io/react-native-toast';
 
 const Stack = createNativeStackNavigator();
+
 const disableFontScaling = () => {
   Text.defaultProps = {
     allowFontScaling: false,
@@ -77,11 +77,9 @@ const App = () => {
               headerTitleStyle: {
                 fontSize: 20,
               },
-
             }} />
 
           </Stack.Navigator>
-
         </NavigationContainer>
         <Toasts />
       </GestureHandlerRootView>

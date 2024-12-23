@@ -139,13 +139,27 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
             case PHASES.HANG:
                 setRepsLeft(repsLeft - 1);
                 if (repsLeft > 1) {
-                    setCurrentPhase(PHASES.REST_AFTER_HANG);
-                    handleSetTime(restAfterHang);
+                    if (restAfterHang === 0) {
+                        // Skip rest phase if rest time is 0
+                        setCurrentPhase(PHASES.HANG);
+                        handleSetTime(hangTime);
+                    } else {
+                        setCurrentPhase(PHASES.REST_AFTER_HANG);
+                        handleSetTime(restAfterHang);
+                    }
                 } else if (setsLeft > 1) {
-                    setCurrentPhase(PHASES.REST_BETWEEN_SETS);
-                    setSetsLeft(setsLeft - 1);
-                    handleSetTime(restAfterSet);
-                    setRepsLeft(reps);
+                    if (restAfterSet === 0) {
+                        // Skip rest between sets if rest time is 0
+                        setCurrentPhase(PHASES.COUNTDOWN);
+                        setSetsLeft(setsLeft - 1);
+                        setRepsLeft(reps);
+                        handleSetTime(preparation);
+                    } else {
+                        setCurrentPhase(PHASES.REST_BETWEEN_SETS);
+                        setSetsLeft(setsLeft - 1);
+                        handleSetTime(restAfterSet);
+                        setRepsLeft(reps);
+                    }
                 } else {
                     setSetsLeft(0);
                     setRepsLeft(0);
@@ -174,7 +188,7 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
         if (currentPhase !== PHASES.COMPLETE) {
             if (timer.isStopped()) {
                 if (currentPhase !== PHASES.REST_BETWEEN_SETS) {
-                    if (preparation !== 0){
+                    if (preparation !== 0) {
 
                         handleSetTime(preparation);
                         setCurrentPhase(PHASES.COUNTDOWN);

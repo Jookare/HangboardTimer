@@ -28,7 +28,6 @@ const SettingsScreen = () => {
 
 	useFocusEffect(
 		React.useCallback(() => {
-			console.log("Here");
 			fetchItems();
 		}, [])
 	);
@@ -76,7 +75,20 @@ const SettingsScreen = () => {
 				text: 'OK', onPress: async () => {
 					handleWorkoutRemove();
 					toast.success('All workouts removed!', {
-						width: 300
+						width: 300,
+						styles: {
+							view: {
+								backgroundColor: '#f7f7f7',
+								borderRadius: 8,
+								padding: 16,
+							},
+							text: {
+								color: 'black',
+							},
+							indicator: {
+								marginRight: 16,
+							},
+						},
 					});
 				}
 			},
@@ -134,7 +146,7 @@ const SettingsScreen = () => {
 				</View>
 
 			</View>
-			<Text style={styles.heading}>App version V.1.1.5</Text>
+			<Text style={styles.heading}>App version V.1.1.7</Text>
 		</View>
 	)
 }
@@ -165,7 +177,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		padding: 2,
 	},
-	switch:{
+	switch: {
 		height: 50,
 		width: 50,
 	},

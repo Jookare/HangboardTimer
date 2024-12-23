@@ -13,14 +13,24 @@ export const workoutStyles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        width: "90%",
-        marginTop: 20
+        width: "100%",
+        borderBottomWidth: 1,
+        borderColor: palette.darkBorder,
+        marginTop: 20,
+        height: 70,
+        paddingBottom: 10
     },
     title: {
-        color: '#313131',
         fontWeight: "600",
-        fontSize: 32,
-        marginBottom: 10
+        fontSize: 36,
+        color: palette.dark,
+        maxWidth: "90%"
+    },
+    input: {
+        fontWeight: "600",
+        fontSize: 36,
+        color: palette.dark,
+        maxWidth: "90%"
     },
     container: {
         width: "100%",
@@ -38,21 +48,16 @@ export const workoutStyles = StyleSheet.create({
         marginBottom: 2,
         fontSize: 18,
         fontWeight: "500",
-        color: "#1c1c1c"
+        color: palette.black
     },
     buttonContainer: {
         flexDirection: "row",
         paddingHorizontal: 20,
+        gap:10,
         paddingVertical: 8,
         width: "100%",
         alignItems: "center",
         borderTopWidth: 1,
-        borderTopColor: "#e7e7e7",
-    },
-    input: {
-        color: '#313131',
-        fontWeight: "600",
-        fontSize: 36,
-        maxWidth: "90%"
+        borderTopColor: palette.dark,
     },
 })

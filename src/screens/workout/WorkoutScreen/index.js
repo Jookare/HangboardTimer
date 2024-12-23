@@ -24,7 +24,6 @@ const WorkoutScreen = () => {
         <View style={workoutStyles.background}>
             <View style={workoutStyles.header}>
                 <Text style={workoutStyles.title}>{workout}</Text>
-
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>

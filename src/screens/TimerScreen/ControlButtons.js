@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { View, Pressable, Text, StyleSheet, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { palette } from '../../utils/palette';
 
 const ControlButtons = ({
     toggle,
@@ -23,9 +24,9 @@ const ControlButtons = ({
                 <Ionicons
                     name="play-back"
                     size={20}
-                    style={{ color: previousFlag() ? '#949396' : '#000000' }}
+                    style={{ color: previousFlag() ? palette.grayIconBG : palette.black }}
                 />
-                <Text style={{ fontSize: 16, color: previousFlag() ? '#949396' : '#000000' }}>
+                <Text style={{ fontSize: 16, color: previousFlag() ? palette.grayIconBG : palette.black }}>
                     REP
                 </Text>
             </Pressable>
@@ -54,9 +55,9 @@ const ControlButtons = ({
                 <Ionicons
                     name="play-forward"
                     size={20}
-                    style={{ color: nextFlag() ? '#949396' : '#000000' }}
+                    style={{ color: nextFlag() ? palette.grayIconBG : palette.black  }}
                 />
-                <Text style={{ fontSize: 16, color: nextFlag() ? '#949396' : '#000000' }}>
+                <Text style={{ fontSize: 16, color: nextFlag() ? palette.grayIconBG : palette.black  }}>
                     REP
                 </Text>
             </Pressable>
@@ -73,9 +74,9 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        backgroundColor: '#fff',
-        borderTopColor: '#e7e7e7',
-        borderTopWidth: 2,
+        backgroundColor: palette.white,
+        borderTopColor: palette.darkBorder,
+        borderTopWidth: 1,
     },
     button: {
         borderRadius: 100,
@@ -84,8 +85,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        borderWidth: 2,
-        borderColor: '#e7e7e7',
+        borderWidth: 1,
+        borderColor: palette.grayBorder,
     },
     pauseButton: {
         borderRadius: 100,
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: "center",
         borderWidth: 2,
-        borderColor: "#e7e7e7",
+        borderColor: palette.grayBorder,
     }
 });
 

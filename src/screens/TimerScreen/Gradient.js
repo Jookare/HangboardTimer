@@ -1,6 +1,8 @@
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet } from 'react-native';
+import { palette } from '../../utils/palette';
+
 
 const Gradient = ({ phase }) => {
     const phaseColors = {
@@ -21,7 +23,7 @@ const styles = StyleSheet.create({
     gradient: {
         position: 'absolute',
         top: 0,
-        height: '70%',
+        height: '80%',
         width: '100%',
     },
 });
