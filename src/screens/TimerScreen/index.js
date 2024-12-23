@@ -41,11 +41,11 @@ const TimerScreen = () => {
             </View>
             <View style={styles.statusContainer}>
                 <View style={styles.repsetContainer}>
-                    <Text style={{fontSize: 16}}>SETS LEFT</Text>
+                    <Text style={{fontSize: 16, width: 85, textAlign: "center"}}>SETS LEFT</Text>
                     <Text style={styles.repsetText}>{setsLeft}</Text>
                 </View>
                 <View style={styles.repsetContainer}>
-                    <Text style={{fontSize: 16}}>REPS LEFT</Text>
+                    <Text style={{fontSize: 16, width: 85, textAlign: "center"}}>REPS LEFT</Text>
                     <Text style={styles.repsetText}>{repsLeft}</Text>
                 </View>
             </View>
