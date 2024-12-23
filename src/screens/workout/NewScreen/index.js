@@ -15,6 +15,7 @@ const NewScreen = () => {
     const route = useRoute();
     const { workout, values, id } = route.params;
     const navigation = useNavigation();
+    console.log(values);
     const { workoutValues, setters } = useWorkoutValues(values);
     const [workoutName, onChangeWorkoutName] = useState('');
 

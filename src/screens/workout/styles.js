@@ -23,13 +23,13 @@ export const workoutStyles = StyleSheet.create({
     title: {
         fontWeight: "600",
         fontSize: 36,
-        color: palette.dark,
+        color: palette.black,
         maxWidth: "90%"
     },
     input: {
         fontWeight: "600",
         fontSize: 36,
-        color: palette.dark,
+        color: palette.black,
         maxWidth: "90%"
     },
     container: {

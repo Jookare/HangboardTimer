@@ -5,7 +5,6 @@ import { useSounds } from './useSounds';
 import { getRemaining } from './useTimerUtils';
 import { getItem } from '../../../utils/functions';
 import { AppState } from 'react-native'
-
 const PHASES = {
     COUNTDOWN: 'countdown',
     HANG: 'hang',
@@ -13,6 +12,7 @@ const PHASES = {
     REST_BETWEEN_SETS: 'restBetweenSets',
     COMPLETE: 'complete',
 };
+
 
 
 export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, reps }) => {
@@ -61,7 +61,6 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
     }, [time]);
 
     const handlePhaseTransition = () => {
-        console.log(time)
         if (playSoundEnabled && (currentPhase === PHASES.REST_AFTER_HANG || currentPhase === PHASES.COUNTDOWN)) {
             if (time === 30) {
                 console.log("TIME == 3")
@@ -86,6 +85,79 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
             transitionToNextPhase();
         }
     };
+
+    const transitionToNextPhase = () => {
+
+        const transitionToPhase = (phase, time = null) => {
+            setCurrentPhase(phase);
+            handleSetTime(time);
+        };
+
+        const completeWorkout = () => {
+            setSetsLeft(0);
+            setRepsLeft(0);
+            timer.stop();
+            setCurrentPhase(PHASES.COMPLETE);
+        };
+
+        const handleCountdownPhase = () => {
+            if (repsLeft === 0 && setsLeft === 0) {
+                completeWorkout();
+            } else {
+                transitionToPhase(PHASES.HANG, hangTime);
+            }
+        };
+
+        const handleHangPhase = () => {
+            setRepsLeft(repsLeft - 1);
+            if (repsLeft > 1) {
+                // Transition based on restAfterHang
+                transitionToPhase(restAfterHang === 0 ? PHASES.HANG : PHASES.REST_AFTER_HANG, restAfterHang || hangTime);
+            } else if (setsLeft > 1) {
+                setSetsLeft(setsLeft - 1);
+                setRepsLeft(reps);
+
+                // Handle the case where restAfterSet === 0
+                if (restAfterSet === 0) {
+                    transitionToPhase(preparation > 0 ? PHASES.COUNTDOWN : PHASES.HANG, preparation || hangTime);
+                } else {
+                    transitionToPhase(PHASES.REST_BETWEEN_SETS, restAfterSet);
+                }
+            } else {
+                completeWorkout();
+            }
+        };
+
+        const handleRestAfterHangPhase = () => {
+            transitionToPhase(PHASES.HANG, hangTime);
+        };
+
+        const handleRestBetweenSetsPhase = () => {
+            transitionToPhase(PHASES.COUNTDOWN, preparation > 0 ? preparation : hangTime);
+        };
+
+        switch (currentPhase) {
+            case PHASES.COUNTDOWN:
+                handleCountdownPhase();
+                break;
+            case PHASES.HANG:
+                handleHangPhase();
+                break;
+            case PHASES.REST_AFTER_HANG:
+                handleRestAfterHangPhase();
+                break;
+            case PHASES.REST_BETWEEN_SETS:
+                handleRestBetweenSetsPhase();
+                break;
+            case PHASES.COMPLETE:
+                handleSetTime(null);
+                break;
+            default:
+                console.error(`Unexpected phase: ${currentPhase}`);
+                break;
+        }
+    };
+
 
     const [timetFinishTime, setTimerFinishTime] = useState(0)
 
@@ -126,63 +198,7 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
         return appStateChangeListener.remove
     }, [onAppStateChange])
 
-    const transitionToNextPhase = () => {
-        switch (currentPhase) {
-            case PHASES.COUNTDOWN:
-                if (repsLeft === 0 && setsLeft === 0) {
-                    setCurrentPhase(PHASES.COMPLETE);
-                } else {
-                    setCurrentPhase(PHASES.HANG);
-                    handleSetTime(hangTime);
-                }
-                break;
-            case PHASES.HANG:
-                setRepsLeft(repsLeft - 1);
-                if (repsLeft > 1) {
-                    if (restAfterHang === 0) {
-                        // Skip rest phase if rest time is 0
-                        setCurrentPhase(PHASES.HANG);
-                        handleSetTime(hangTime);
-                    } else {
-                        setCurrentPhase(PHASES.REST_AFTER_HANG);
-                        handleSetTime(restAfterHang);
-                    }
-                } else if (setsLeft > 1) {
-                    if (restAfterSet === 0) {
-                        // Skip rest between sets if rest time is 0
-                        setCurrentPhase(PHASES.COUNTDOWN);
-                        setSetsLeft(setsLeft - 1);
-                        setRepsLeft(reps);
-                        handleSetTime(preparation);
-                    } else {
-                        setCurrentPhase(PHASES.REST_BETWEEN_SETS);
-                        setSetsLeft(setsLeft - 1);
-                        handleSetTime(restAfterSet);
-                        setRepsLeft(reps);
-                    }
-                } else {
-                    setSetsLeft(0);
-                    setRepsLeft(0);
-                    timer.stop();
-                    setCurrentPhase(PHASES.COMPLETE);
-                }
-                break;
-            case PHASES.REST_AFTER_HANG:
-                setCurrentPhase(PHASES.HANG);
-                handleSetTime(hangTime);
-                break;
-            case PHASES.REST_BETWEEN_SETS:
-                setCurrentPhase(PHASES.COUNTDOWN);
-                handleSetTime(preparation);
-                break;
-            case PHASES.COMPLETE:
-                handleSetTime(null);
-                break;
-            default:
-                console.error(`Unexpected phase: ${currentPhase}`);
-                break;
-        }
-    };
+
 
     const toggle = () => {
         if (currentPhase !== PHASES.COMPLETE) {

@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { startButtonStyle } from './styles'
+import { palette } from '../../utils/palette';
 
 export const StartButton = ({ onPress }) => {
 
@@ -26,7 +27,7 @@ export const SaveWorkoutButton = ({ onPress }) => {
             ]}
             onPress={onPress}>
 
-            <Text style={startButtonStyle.startButtonText}>Save as workout</Text>
+            <Text style={{fontSize: 20, width: 150, color: palette.white}}>Save as workout</Text>
             <Ionicons name="save-outline" size={26} color="white" />
         </Pressable>
     )

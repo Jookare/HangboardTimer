@@ -8,10 +8,12 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: palette.white,
         gap: 10,
+        paddingBottom: 80
     },
     titleContainer: {
-        position: "absolute",
-        top: 60,
+        // position: "absolute",
+        // top: 55,
+        marginBottom: 20,
     },
     titleText: {
         fontSize: 32,

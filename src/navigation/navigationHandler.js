@@ -25,7 +25,7 @@ export async function handleButtonPress(navigation, navID) {
             break;
         case "#workout#@new":
             workoutData = {
-                values: [1, 1, 0, 0, 0, 0, 0, 0],
+                values: [1, 1, 0, 1, 0, 0, 0, 0],
                 workout: "",
             }
             handleNavigation(navigation, 'New Workout', workoutData);
@@ -38,7 +38,7 @@ export async function handleButtonPress(navigation, navID) {
                 values = value.values;
                 id = value.id;
             } else {
-                values = [1, 1, 0, 0, 0, 0, 0, 0];
+                values = [1, 1, 0, 1, 0, 0, 0, 0];
                 workout = '';
                 id = null;
             }

@@ -8,7 +8,7 @@ import { Entypo } from '@expo/vector-icons';
 // Functional component for Time Selector
 export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTimeSeconds, selectorType }) => {
     // Temporary state for inputs to prevent UI jitter
-    
+
     const [tempMinutes, setTempMinutes] = useState(timeMinutes);
     const [tempSeconds, setTempSeconds] = useState(timeSeconds);
 
@@ -25,7 +25,6 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                 seconds = 59;
             }
         }
-
         setTimeMinutes(formattedNumber(minutes));
         setTimeSeconds(formattedNumber(seconds));
         setTempMinutes(formattedNumber(minutes));
@@ -35,8 +34,10 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
     // Handle decrementing time
     const handleTimeDecrement = () => {
         const totalSeconds = Number(timeMinutes) * 60 + Number(timeSeconds);
-        if (totalSeconds > 0) {
-            updateTime(totalSeconds - 1);
+        if (selectorType === "hang time") {
+            updateTime(totalSeconds > 1 ? totalSeconds - 1 : totalSeconds)
+        } else {
+            updateTime(totalSeconds > 0 ? totalSeconds - 1 : totalSeconds)
         }
     };
 
@@ -49,7 +50,12 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
     // Handle editing completion
     const handleSubmitEditing = () => {
         const totalSeconds = Number(tempMinutes) * 60 + Number(tempSeconds);
-        updateTime(totalSeconds);
+        if (selectorType === "hang time") {
+            updateTime(totalSeconds > 1 ? totalSeconds : 1)
+        } else {
+            updateTime(totalSeconds);
+
+        }
     };
 
     // Handle direct input change (temporarily)

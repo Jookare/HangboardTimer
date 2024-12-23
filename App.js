@@ -48,7 +48,6 @@ const App = () => {
               options={{
                 headerTitle: (props) => <MainHeaderTitle {...props} />,
                 headerTitleAlign: "center",
-                headerRight: (props) => <MainHeaderRight {...props} />,
               }} />
             <Stack.Screen name="Workout" component={WorkoutScreen}
               options={{

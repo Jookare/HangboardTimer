@@ -33,7 +33,7 @@ const ControlButtons = ({
             <Pressable
                 onPress={toggle}
                 style={({ pressed }) => [
-                    { opacity: pressed ? 0.9 : 1.0 },
+                    { opacity: pressed ? 0.7 : 1.0 },
                     styles.pauseButton,
                 ]}
             >
@@ -46,7 +46,7 @@ const ControlButtons = ({
 
             <Pressable
                 style={({ pressed }) => [
-                    { opacity: pressed ? 0.9 : 1.0 },
+                    { opacity: pressed ? 0.7 : 1.0 },
                     styles.button,
                 ]}
                 disabled={nextFlag()}

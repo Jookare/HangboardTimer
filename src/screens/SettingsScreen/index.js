@@ -183,6 +183,8 @@ const styles = StyleSheet.create({
 	},
 	itemContainer: {
 		width: "100%",
+		borderWidth: 1,
+		borderColor: palette.grayBorder,
 		backgroundColor: "white",
 		marginVertical: 4,
 		paddingHorizontal: 20,
