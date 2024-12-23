@@ -146,7 +146,7 @@ const SettingsScreen = () => {
 				</View>
 
 			</View>
-			<Text style={styles.heading}>App version V.1.1.7</Text>
+			<Text style={styles.heading}>App version V.1.1.8</Text>
 		</View>
 	)
 }
