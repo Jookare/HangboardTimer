@@ -63,8 +63,10 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
         const sanitized = text.replace(/[^0-9]/g, '');
         if (type === 'minutes') {
             setTempMinutes(sanitized);
+            setTimeMinutes(sanitized);
         } else if (type === 'seconds') {
             setTempSeconds(sanitized);
+            setTimeSeconds(sanitized);
         }
     };
 

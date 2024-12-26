@@ -32,8 +32,7 @@ export const startButtonStyle = StyleSheet.create({
         borderRadius: 20,
         padding: 16,
         flexDirection: "row",
-        margin: 20,
-        gap: 10,
+        gap: 6,
     },
     startButtonText: {
         fontSize: 20,

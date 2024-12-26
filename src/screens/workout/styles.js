@@ -52,9 +52,8 @@ export const workoutStyles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: "row",
-        paddingHorizontal: 20,
-        gap:10,
-        paddingVertical: 8,
+        justifyContent: "space-evenly",
+        paddingVertical: 16,
         width: "100%",
         alignItems: "center",
         borderTopWidth: 1,

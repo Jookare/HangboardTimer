@@ -147,7 +147,7 @@ const CustomScreen = () => {
                     selectorType={"rest between sets"}
                 />
             </ScrollView>
-            <View style={[workoutStyles.buttonContainer, { justifyContent: "center" }]}>
+            <View style={[workoutStyles.buttonContainer]}>
                 <SaveButton onPress={createSaveButtonAlert} />
                 <StartButton onPress={handleNavigation} />
                 <RemoveButton onPress={createRemoveButtonAlert} />
