@@ -4,18 +4,26 @@
 </p>
 
 
-A very simple and highly customizable hangboard timing app for Android
+A Simple and customizable hangboard timer🧗
+
+### Features:
+
+- ⚒️ Custom Workouts: Create and save personalized workouts for quick access.
+- 📱 User-Friendly Design: A clean, minimalist interface to keep you focused.
+- 🚫 No Ads or Registration: Train without interruptions or account setup.
+- 💾 Offline Storage: Your workouts are saved securely on your device.
 
 > [!NOTE]  
 > Hopefully someday on Google Play Store
-
 ---
 
+
 <p align="center">
-  <img src="./assets/screenshots/homeview.png" alt="screenshot-1" width="200">
-  <img src="./assets/screenshots/workoutview.png" alt="screenshot-2" width="200">
-  <img src="./assets/screenshots/timerview.png" alt="screenshot-3" width="200">
-  <img src="./assets/screenshots/settingview.png" alt="screenshot-4" width="200">
+  <img src="./assets/screenshots/MainScreen.png" alt="MainScreen" width="200">
+  <img src="./assets/screenshots/WorkoutScreen.png" alt="WorkoutScreen" width="200">
+  <img src="./assets/screenshots/TimerScreen.png" alt="TimerScreen" width="200">
+  <img src="./assets/screenshots/CustomWorkoutScreen.png" alt="CustomWorkoutScreen" width="200">
+  <img src="./assets/screenshots/SettingsScreen.png" alt="SettingsScreen" width="200">
 </p>
 
 ---
@@ -39,18 +47,4 @@ The [Expo](https://expo.io) packager will show, and you can either:
 
 -   install the Expo app, scan the displayed QR code, and run the app on your mobile phone directly.
 -   open the Android simulator.
-
----
-
-Updating the code:
-
-```
-npx expo install expo@latest
-npx expo install --fix
-```
-
-Creating new build
-```
-eas build --platform android
-```
 
