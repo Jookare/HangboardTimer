@@ -44,20 +44,17 @@ export const startButtonStyle = StyleSheet.create({
 
 export const sideButtonStyle = StyleSheet.create({
     sideButton: {
-        width: 70,
+        width: 60,
         aspectRatio: 1,
-        borderRadius: 75,
         alignItems: "center",
         justifyContent: "center",
+        borderRadius: 8,
     },
     saveButton: {
-        backgroundColor: palette.greenBG,
-        borderWidth: 2,
-        borderColor: palette.greenBorder,
+        // color: palette.green,
     },
     removeButton: {
-        backgroundColor: palette.redBG,
-        borderWidth: 2,
-        borderColor: palette.redBorder,
+        // color: palette.red,
     }
 });
+

@@ -1,5 +1,5 @@
 // Import necessary dependencies
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { selectorStyles, workoutStyles } from './styles';
 import { Entypo } from '@expo/vector-icons';
@@ -9,47 +9,92 @@ import { Entypo } from '@expo/vector-icons';
 export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTimeSeconds, selectorType }) => {
     // Temporary state for inputs to prevent UI jitter
 
-    const [tempMinutes, setTempMinutes] = useState(timeMinutes);
-    const [tempSeconds, setTempSeconds] = useState(timeSeconds);
+    const [isFocusedMin, setIsFocusedMin] = useState(false);
+    const [isFocusedSec, setIsFocusedSec] = useState(false);
 
     // Format number to always have two digits
     const formattedNumber = (number) => String(number).padStart(2, '0');
 
-    // Update time values based on total seconds
-    const updateTime = (totalSeconds) => {
+    const totalSecondsRef = useRef(Number(timeMinutes) * 60 + Number(timeSeconds)); // Track total seconds directly
+
+    const timer = useRef(null);
+    const speedRef = useRef(200); // Start at 200ms delay
+    const minSpeed = 25;          // Fastest speed (50ms delay)
+
+
+    const updateTime = () => {
+        const totalSeconds = totalSecondsRef.current;
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = totalSeconds % 60;
-        if (totalSeconds >= 5940) {
-            minutes = 99;
-            if (totalSeconds >= 5999) {
+
+        if (totalSeconds >= 3540) {
+            minutes = 59;
+            if (totalSeconds >= 3599) {
                 seconds = 59;
             }
         }
+
         setTimeMinutes(formattedNumber(minutes));
         setTimeSeconds(formattedNumber(seconds));
-        setTempMinutes(formattedNumber(minutes));
-        setTempSeconds(formattedNumber(seconds));
     };
 
     // Handle decrementing time
     const handleTimeDecrement = () => {
-        const totalSeconds = Number(timeMinutes) * 60 + Number(timeSeconds);
         if (selectorType === "hang time") {
-            updateTime(totalSeconds > 1 ? totalSeconds - 1 : totalSeconds)
+            if (totalSecondsRef.current > 1) {
+                totalSecondsRef.current -= 1;
+                updateTime(); // Update display
+            }
         } else {
-            updateTime(totalSeconds > 0 ? totalSeconds - 1 : totalSeconds)
+            if (totalSecondsRef.current > 0) {
+                totalSecondsRef.current -= 1;
+                updateTime(); // Update display
+            }
         }
     };
 
     // Handle incrementing time
     const handleTimeIncrement = () => {
-        const totalSeconds = Number(timeMinutes) * 60 + Number(timeSeconds);
-        updateTime(totalSeconds + 1);
+        totalSecondsRef.current += 1;
+        updateTime(); // Update display
     };
 
+
+    const updateWithAcceleration = (increment) => {
+        // Increment or decrement based on the flag
+        console.log("here");
+        if (increment) {
+            handleTimeIncrement();
+        } else {
+            handleTimeDecrement();
+        }
+
+        // Gradually reduce the interval (increase speed)
+        speedRef.current = Math.max(minSpeed, speedRef.current * 0.85);
+
+        // Set the next timeout
+        timer.current = setTimeout(() => updateWithAcceleration(increment), speedRef.current);
+    };
+
+    const startTimer = (increment) => {
+        if (timer.current) return; // Prevent multiple timers
+        speedRef.current = 200; // Reset speed to initial value
+        updateWithAcceleration(increment);
+    };
+
+    const stopTimer = () => {
+        if (timer.current) {
+            clearTimeout(timer.current); // Clear the timeout
+            timer.current = null; // Reset the timer reference
+        }
+        speedRef.current = 200; // Reset speed to the initial value
+    };
+
+
     // Handle editing completion
-    const handleSubmitEditing = () => {
-        const totalSeconds = Number(tempMinutes) * 60 + Number(tempSeconds);
+    const handleSubmitEditing = (setIsFocused) => {
+        setIsFocused(false);
+        const totalSeconds = Number(timeMinutes) * 60 + Number(timeSeconds);
         if (selectorType === "hang time") {
             updateTime(totalSeconds > 1 ? totalSeconds : 1)
         } else {
@@ -62,10 +107,8 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
     const handleInputChange = (text, type) => {
         const sanitized = text.replace(/[^0-9]/g, '');
         if (type === 'minutes') {
-            setTempMinutes(sanitized);
             setTimeMinutes(sanitized);
         } else if (type === 'seconds') {
-            setTempSeconds(sanitized);
             setTimeSeconds(sanitized);
         }
     };
@@ -79,35 +122,52 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
     return (
         <View style={selectorStyles.container}>
             <View style={[selectorStyles.row, selectorStyles.div]}>
-                <TouchableOpacity onPress={handleTimeDecrement} accessibilityLabel={SecondsDecrease}>
+                <TouchableOpacity
+                    onPress={handleTimeDecrement}
+                    onLongPress={() => startTimer(false)}
+                    onPressOut={stopTimer}
+                    accessibilityLabel={SecondsDecrease}
+                >
                     <View style={[selectorStyles.icon, selectorStyles.iconMinus]}>
-                        <Entypo name="minus" size={20} style={selectorStyles.iconColor} />
+                        <Entypo name="minus" size={24} style={selectorStyles.iconColor} />
                     </View>
                 </TouchableOpacity>
                 <View style={styles.inputDiv}>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'right', height: 50, width: 50 }]}
+                        style={[selectorStyles.text, { textAlign: 'center', height: 60, width: 50, }]}
+                        underlineColorAndroid={isFocusedMin ? '#EF5452' : "transparent"}
+                        selectionColor={"#EF5452"}
                         keyboardType="numeric"
                         maxLength={2}
-                        value={tempMinutes}
+                        value={timeMinutes}
                         onChangeText={(text) => handleInputChange(text, 'minutes')}
-                        onSubmitEditing={handleSubmitEditing}
-                        onBlur={handleSubmitEditing} // Ensure changes are saved
+                        onSubmitEditing={() => handleSubmitEditing(setIsFocusedMin)}
+                        onBlur={() => handleSubmitEditing(setIsFocusedMin)}
+                        onFocus={() => setIsFocusedMin(true)}
                     />
-                    <Text style={selectorStyles.text}>:</Text>
+                    <Text style={[selectorStyles.text, {textAlignVertical: 'center', fontSize: 28, marginBottom: 4}]}>:</Text>
                     <TextInput
-                        style={[selectorStyles.text, { textAlign: 'left', height: 50, width: 50 }]}
+                        style={[selectorStyles.text, { textAlign: 'center', height: 60, width: 50, }]}
+                        underlineColorAndroid={isFocusedSec ? '#EF5452' : "transparent"}
+                        selectionColor={"#EF5452"}
                         keyboardType="numeric"
                         maxLength={2}
-                        value={tempSeconds}
+                        value={timeSeconds}
                         onChangeText={(text) => handleInputChange(text, 'seconds')}
-                        onSubmitEditing={handleSubmitEditing}
-                        onBlur={handleSubmitEditing} // Ensure changes are saved
+                        onSubmitEditing={() => handleSubmitEditing(setIsFocusedSec)}
+                        onBlur={() => handleSubmitEditing(setIsFocusedSec)}
+                        onFocus={() => setIsFocusedSec(true)}
                     />
                 </View>
-                <TouchableOpacity onPress={handleTimeIncrement} accessibilityLabel={SecondsIncrease}>
+                <TouchableOpacity
+                    onPress={handleTimeIncrement}
+                    accessibilityLabel={SecondsIncrease}
+                    onLongPress={() => startTimer(true)}
+                    onPressOut={stopTimer}
+
+                >
                     <View style={[selectorStyles.icon, selectorStyles.iconPlus]}>
-                        <Entypo name="plus" size={20} style={selectorStyles.iconColor} />
+                        <Entypo name="plus" size={24} style={selectorStyles.iconColor} />
                     </View>
                 </TouchableOpacity>
             </View>

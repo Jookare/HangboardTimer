@@ -22,9 +22,9 @@ export const styles = StyleSheet.create({
     timerContainer: {
         borderRadius: 40,
         padding: 20,
-        backgroundColor: "rgba(255, 255, 255, 0.5)",
-        borderWidth: 3,
-        borderColor: palette.grayBorder,
+        backgroundColor: "rgba(255, 255, 255, 0.75)",
+        borderWidth: 1,
+		borderColor: palette.grayBorder,
     },
     timerText: {
         fontSize: 72,
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 2,
-        backgroundColor: "rgba(255, 255, 255, 0.5)",
+        backgroundColor: "rgba(255, 255, 255, 0.75)",
         borderColor: palette.grayBorder,
     },
     repsetText: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable, Text, StyleSheet, Platform } from 'react-native';
+import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { palette } from '../../utils/palette';
 
@@ -15,25 +15,23 @@ const ControlButtons = ({
         <View style={styles.buttonContainer}>
             <Pressable
                 style={({ pressed }) => [
-                    { opacity: pressed ? 0.7 : 1.0 },
+                    { opacity: pressed ? 0.5 : 1.0 },
                     styles.button,
                 ]}
                 disabled={previousFlag()}
                 onPress={previousRep}
             >
-                <Ionicons
-                    name="play-back"
-                    size={20}
-                    style={{ color: previousFlag() ? palette.grayIconBG : palette.black }}
+                <Ionicons name="play-back" size={20}
+                    style={{ opacity: previousFlag() ? 0.4 : 1 }}
                 />
-                <Text style={{ fontSize: 16, color: previousFlag() ? palette.grayIconBG : palette.black }}>
+                <Text style={{ fontSize: 16, opacity: previousFlag() ? 0.4 : 1 }}>
                     REP
                 </Text>
             </Pressable>
             <Pressable
                 onPress={toggle}
                 style={({ pressed }) => [
-                    { opacity: pressed ? 0.7 : 1.0 },
+                    { opacity: pressed ? 0.5 : 1.0 },
                     styles.pauseButton,
                 ]}
             >
@@ -46,18 +44,16 @@ const ControlButtons = ({
 
             <Pressable
                 style={({ pressed }) => [
-                    { opacity: pressed ? 0.7 : 1.0 },
+                    { opacity: pressed ? 0.5 : 1.0 },
                     styles.button,
                 ]}
                 disabled={nextFlag()}
                 onPress={nextRep}
             >
-                <Ionicons
-                    name="play-forward"
-                    size={20}
-                    style={{ color: nextFlag() ? palette.grayIconBG : palette.black  }}
+                <Ionicons name="play-forward" size={20}
+                    style={{ opacity: nextFlag() ? 0.4 : 1 }}
                 />
-                <Text style={{ fontSize: 16, color: nextFlag() ? palette.grayIconBG : palette.black  }}>
+                <Text style={{ fontSize: 16, opacity: nextFlag() ? 0.4 : 1 }}>
                     REP
                 </Text>
             </Pressable>
@@ -79,7 +75,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
     },
     button: {
-        borderRadius: 100,
+        borderRadius: 20,
         width: 80,
         height: 80,
         alignItems: 'center',
@@ -92,11 +88,10 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         width: 100,
         height: 100,
-        backgroundColor: "rgba(255, 255, 255, 0.5)",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: palette.grayBorder,
     }
 });

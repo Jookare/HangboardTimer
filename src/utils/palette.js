@@ -61,11 +61,12 @@ export const palette = {
     // Gray theme - Better contrast
     gray: '#F2F4F7',         // Light background
     grayBorder: '#D0D5DD',   // Distinct border
-    grayIconBG: '#98A2B3',   // Icon background
+    grayIconBG: '#f0f0f0',   // Icon background
+    grayText: "#a8b0c4",
     
     // Dark theme - Richer blacks
-    dark: '#344054',         // Rich dark gray
-    darkBorder: '#1D2939',   // Deep border
+    dark: '#323232',         // Rich dark gray
+    darkBorder: '#252525',   // Deep border
     
     // Switch colors - More vibrant
     redSwitch: '#FF3B3B',    // Brighter red

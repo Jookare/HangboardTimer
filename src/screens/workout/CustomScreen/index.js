@@ -11,6 +11,8 @@ import { saveItem, deleteItem } from '../../../utils/functions';
 import { Ionicons } from '@expo/vector-icons';
 import { toast } from '@backpackapp-io/react-native-toast';
 import { palette } from '../../../utils/palette';
+import CustomAlert from '../../../components/modals/customModal';
+
 
 const CustomScreen = () => {
     const route = useRoute();
@@ -19,6 +21,12 @@ const CustomScreen = () => {
     const { workoutValues, setters } = useWorkoutValues(values);
     const [workoutName, onChangeWorkoutName] = useState(workout);
 
+    // Navigation
+    const handleNavigation = () => {
+        navigation.navigate('Timer', { workoutValues });
+    };
+
+    // Storage
     const storeData = async () => {
         let stored = JSON.stringify({
             id: id,
@@ -29,11 +37,12 @@ const CustomScreen = () => {
             name: workoutName
         })
         await saveItem(id, stored);
+        setAlertVisible(false);
         toast.success('Workout saved!', {
             width: 300,
             styles: {
                 view: {
-                    backgroundColor: '#f7f7f7',
+                    backgroundColor: palette.gray,
                     borderRadius: 8,
                     padding: 16,
                 },
@@ -44,17 +53,18 @@ const CustomScreen = () => {
                     marginRight: 16,
                 },
             },
-        });
+        })
     }
 
     const removeData = async () => {
         await deleteItem(id);
         navigation.navigate('Main');
+        setAlertVisible(false);
         toast.success('Workout removed!', {
             width: 300,
             styles: {
                 view: {
-                    backgroundColor: '#f7f7f7',
+                    backgroundColor: palette.gray,
                     borderRadius: 8,
                     padding: 16,
                 },
@@ -65,31 +75,28 @@ const CustomScreen = () => {
                     marginRight: 16,
                 },
             },
-        });
+        })
     }
 
-    const createSaveButtonAlert = () =>
-        Alert.alert('Save workout', 'Are you sure you want to save workout changes?', [
-            {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-            },
-            { text: 'OK', onPress: () => storeData() },
-        ]);
 
-    const createRemoveButtonAlert = () =>
-        Alert.alert('Remove workout', 'Are you sure you want to remove workout?', [
-            {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-            },
-            { text: 'OK', onPress: () => removeData() },
-        ]);
+    // Alert things
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [alertTitle, setAlertTitle] = useState('');
+    const [alertMessage, setAlertMessage] = useState('');
+    const [onConfirmAction, setOnConfirmAction] = useState(null);
 
-    const handleNavigation = () => {
-        navigation.navigate('Timer', { workoutValues });
+    const createSaveButtonAlert = () => {
+        setAlertTitle('Save workout');
+        setAlertMessage('Are you sure you want to save workout changes?');
+        setOnConfirmAction(() => storeData); // Assign the confirm action
+        setAlertVisible(true);
+    };
+
+    const createRemoveButtonAlert = () => {
+        setAlertTitle('Remove workout');
+        setAlertMessage('Are you sure you want to remove workout?');
+        setOnConfirmAction(() => removeData); // Assign the confirm action
+        setAlertVisible(true);
     };
 
     return (
@@ -98,9 +105,9 @@ const CustomScreen = () => {
                 <TextInput
                     style={workoutStyles.input}
                     onChangeText={onChangeWorkoutName}
-                    placeholder='Workout name'
+                    placeholder='Add name'
                     value={workoutName}
-                    placeholderTextColor={palette.grayBorder}
+                    placeholderTextColor={palette.grayText}
                     editable={true}
                 />
                 <Ionicons name="pencil" size={32} color={palette.dark} />
@@ -148,10 +155,17 @@ const CustomScreen = () => {
                 />
             </ScrollView>
             <View style={[workoutStyles.buttonContainer]}>
-                <SaveButton onPress={createSaveButtonAlert} />
-                <StartButton onPress={handleNavigation} />
                 <RemoveButton onPress={createRemoveButtonAlert} />
+                <StartButton onPress={handleNavigation} />
+                <SaveButton onPress={createSaveButtonAlert} />
             </View>
+            <CustomAlert
+                visible={alertVisible}
+                setVisible={setAlertVisible}
+                onConfirm={onConfirmAction} // Action passed dynamically
+                initialTitle={alertTitle}
+                initialMessage={alertMessage}
+            />
         </View>
     )
 }

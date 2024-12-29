@@ -40,12 +40,12 @@ const NewScreen = () => {
                 <TextInput
                     style={workoutStyles.input}
                     onChangeText={onChangeWorkoutName}
-                    placeholder='Workout name'
+                    placeholder='Add name'
                     value={workoutName}
-                    placeholderTextColor={palette.grayIconBG}
                     editable={true}
+                    placeholderTextColor={palette.grayText}
                 />
-                <Ionicons name="pencil" size={32}  color={palette.grayIconBG} />
+                <Ionicons name="pencil" size={32} color={palette.grayText} />
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>

@@ -4,23 +4,26 @@ import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/nativ
 import { palette } from '../../utils/palette';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, Alert, Pressable, StyleSheet, Button, Switch } from 'react-native';
-import * as Haptics from 'expo-haptics';
 import { Slider } from '@miblanchard/react-native-slider';
-import { Audio } from 'expo-av';
 import { deleteItem, getItem, getAllItems, saveItem } from '../../utils/functions';
 
+import CustomAlert from '../../components/modals/customModal';
 import { toast, Toasts } from '@backpackapp-io/react-native-toast';
 
 const SettingsScreen = () => {
 	const [prep, setPrep] = useState(5);
+	const [audio, setAudio] = useState(true);
 	const [debouncedPrep, setDebouncedPrep] = useState(prep);
-	const [audio, setAudio] = useState(false);
+
+	const [alertVisible, setAlertVisible] = useState(false);
+
 
 	const fetchItems = async () => {
 		let audio2 = await getItem("@audio");
 		let prep2 = await getItem("@preparation");
 		// Fallback to default if prep2 is null or invalid
 		prep2 = prep2 !== null ? JSON.parse(prep2) : 5;
+		audio2 = audio2 !== null ? audio2 : true;
 
 		setAudio(audio2);
 		setPrep(prep2);
@@ -62,37 +65,35 @@ const SettingsScreen = () => {
 				value = await deleteItem(keys[i]);
 			}
 		}
+		setAlertVisible(false);
+		openToast();
 	}
 
-	const createRemoveAllAlert = () =>
-		Alert.alert('Remove ALL custom workouts', 'Are you sure you want to remove all custom workouts?', [
-			{
-				text: 'Cancel',
-				onPress: () => console.log('Cancel Pressed'),
-				style: 'cancel',
-			},
-			{
-				text: 'OK', onPress: async () => {
-					handleWorkoutRemove();
-					toast.success('All workouts removed!', {
-						width: 300,
-						styles: {
-							view: {
-								backgroundColor: '#f7f7f7',
-								borderRadius: 8,
-								padding: 16,
-							},
-							text: {
-								color: 'black',
-							},
-							indicator: {
-								marginRight: 16,
-							},
-						},
-					});
-				}
-			},
-		]);
+	const createRemoveAllAlert = () => {
+		console.log("Opening Modal");
+		setAlertVisible(true);
+	};
+
+	const openToast = () => {
+		return (
+			toast.success('All workouts removed!', {
+				width: 300,
+				styles: {
+					view: {
+						backgroundColor: palette.gray,
+						borderRadius: 8,
+						padding: 16,
+					},
+					text: {
+						color: 'black',
+					},
+					indicator: {
+						marginRight: 16,
+					},
+				},
+			})
+		)
+	}
 
 	return (
 		<View style={styles.background}>
@@ -143,10 +144,17 @@ const SettingsScreen = () => {
 						</View>
 						<Ionicons name="chevron-forward" size={24} color="black" />
 					</Pressable>
+					<CustomAlert
+						visible={alertVisible}
+						setVisible={setAlertVisible}
+						onConfirm={handleWorkoutRemove}
+						initialTitle={'Remove ALL custom workouts'}
+						initialMessage={'Are you sure you want to remove all custom workouts?'}
+					/>
 				</View>
 
 			</View>
-			<Text style={styles.heading}>App version V.1.1.9</Text>
+			<Text style={styles.heading}>App version V.1.2.0</Text>
 		</View>
 	)
 }
@@ -169,7 +177,7 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		fontWeight: "500",
 		marginHorizontal: 4,
-		color: palette.graySwitch
+		color: palette.black
 	},
 	switchContainer: {
 		position: "relative",
@@ -178,7 +186,6 @@ const styles = StyleSheet.create({
 		padding: 2,
 	},
 	switch: {
-		height: 50,
 		width: 50,
 	},
 	itemContainer: {

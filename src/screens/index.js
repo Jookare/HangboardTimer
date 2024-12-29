@@ -128,7 +128,7 @@ const settingsButton = (handleClick) => {
                   width: buttonSize,
                   height: buttonSize,
                   borderRadius: 8, // Optional: make it circular for smaller screens
-                  backgroundColor: pressed ? '#f0f0f0' : 'transparent',
+                  backgroundColor: pressed ? palette.grayIconBG : 'transparent',
                   justifyContent: "center",
                   alignItems: "center",
                 },
@@ -137,7 +137,7 @@ const settingsButton = (handleClick) => {
             accessibilityLabel="Settings"
             accessibilityRole="button"
         >
-            <Ionicons name="settings-outline" size={iconSize} color="black" />
+            <Ionicons name="settings-outline" size={iconSize} color={palette.dark} />
         </Pressable>
     )
 }
