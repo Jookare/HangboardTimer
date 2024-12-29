@@ -19,11 +19,11 @@ A Simple and customizable hangboard timer🧗
 
 
 <p align="center">
-  <img src="./assets/screenshots/MainScreen.png" alt="MainScreen" width="200">
-  <img src="./assets/screenshots/WorkoutScreen.png" alt="WorkoutScreen" width="200">
-  <img src="./assets/screenshots/TimerScreen.png" alt="TimerScreen" width="200">
-  <img src="./assets/screenshots/CustomWorkoutScreen.png" alt="CustomWorkoutScreen" width="200">
-  <img src="./assets/screenshots/SettingsScreen.png" alt="SettingsScreen" width="200">
+  <img src="./assets/screenshots/MainScreen.png" alt="MainScreen" width="300">
+  <img src="./assets/screenshots/WorkoutScreen.png" alt="WorkoutScreen" width="300">
+  <img src="./assets/screenshots/TimerScreen.png" alt="TimerScreen" width="300">
+  <img src="./assets/screenshots/CustomWorkoutScreen.png" alt="CustomWorkoutScreen" width="300">
+  <img src="./assets/screenshots/SettingsScreen.png" alt="SettingsScreen" width="300">
 </p>
 
 ---
