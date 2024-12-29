@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
 	},
 	switch: {
 		width: 50,
+		height: 50,
 	},
 	itemContainer: {
 		width: "100%",

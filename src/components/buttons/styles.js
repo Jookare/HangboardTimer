@@ -27,10 +27,9 @@ export const mainButtonStyle = StyleSheet.create({
 export const startButtonStyle = StyleSheet.create({
     startButton: {
         backgroundColor: palette.dark,
-        borderColor: palette.darkBorder,
-        borderWidth: 2,
+        borderColor: palette.dark,
         borderRadius: 20,
-        padding: 16,
+        padding: 20,
         flexDirection: "row",
         gap: 6,
     },

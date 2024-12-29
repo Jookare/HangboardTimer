@@ -82,13 +82,18 @@ const styles = StyleSheet.create({
 	button: {
 		alignItems: "center",
 		justifyContent: "center",
-		height: 40,
+		height: 50,
 		borderRadius: 10,
-		borderWidth: 1,
-		borderColor: palette.darkBorder,
 	},
 	OKButton: {
 		backgroundColor: palette.dark,
+		borderWidth: 1,
+		borderColor: palette.dark,
+	},
+	CancelButton: {
+		
+		borderWidth: 1,
+		borderColor: palette.darkBorder,
 	},
 	text: {
 		fontSize: 16,

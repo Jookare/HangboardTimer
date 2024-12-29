@@ -62,7 +62,7 @@ export const palette = {
     gray: '#F2F4F7',         // Light background
     grayBorder: '#D0D5DD',   // Distinct border
     grayIconBG: '#f0f0f0',   // Icon background
-    grayText: "#a8b0c4",
+    grayText: "#868686",
     
     // Dark theme - Richer blacks
     dark: '#323232',         // Rich dark gray

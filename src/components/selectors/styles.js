@@ -23,7 +23,7 @@ export const selectorStyles = StyleSheet.create({
         backgroundColor: palette.redIconBG,
     },
     text: {
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: "500"
     },
     div: {

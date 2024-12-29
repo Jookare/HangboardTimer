@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { selectorStyles, workoutStyles } from './styles';
 import { Entypo } from '@expo/vector-icons';
+import { palette } from '../../utils/palette';
 
 
 // Functional component for Time Selector
@@ -135,8 +136,8 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                 <View style={styles.inputDiv}>
                     <TextInput
                         style={[selectorStyles.text, { textAlign: 'center', height: 60, width: 50, }]}
-                        underlineColorAndroid={isFocusedMin ? '#EF5452' : "transparent"}
-                        selectionColor={"#EF5452"}
+                        underlineColorAndroid={isFocusedMin ? palette.dark : "transparent"}
+                        selectionColor={palette.dark}
                         keyboardType="numeric"
                         maxLength={2}
                         value={timeMinutes}
@@ -148,8 +149,8 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                     <Text style={[selectorStyles.text, {textAlignVertical: 'center', fontSize: 28, marginBottom: 4}]}>:</Text>
                     <TextInput
                         style={[selectorStyles.text, { textAlign: 'center', height: 60, width: 50, }]}
-                        underlineColorAndroid={isFocusedSec ? '#EF5452' : "transparent"}
-                        selectionColor={"#EF5452"}
+                        underlineColorAndroid={isFocusedSec ? palette.dark : "transparent"}
+                        selectionColor={palette.dark}
                         keyboardType="numeric"
                         maxLength={2}
                         value={timeSeconds}
