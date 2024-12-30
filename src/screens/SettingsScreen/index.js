@@ -1,6 +1,5 @@
 // Import necessary dependencies
 import React, { useEffect, useState, Component } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
 import { palette } from '../../utils/palette';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, Pressable, StyleSheet, Switch } from 'react-native';
