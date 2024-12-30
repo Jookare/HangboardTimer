@@ -22,11 +22,13 @@ export const styles = StyleSheet.create({
     timerContainer: {
         borderRadius: 40,
         padding: 20,
+        width: 280,
         backgroundColor: "rgba(255, 255, 255, 0.75)",
         borderWidth: 1,
 		borderColor: palette.grayBorder,
     },
     timerText: {
+        textAlign: "center",
         fontSize: 72,
         fontWeight: 'bold',
     },
