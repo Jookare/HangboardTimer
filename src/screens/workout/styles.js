@@ -16,21 +16,21 @@ export const workoutStyles = StyleSheet.create({
         width: "100%",
         borderBottomWidth: 1,
         borderColor: palette.darkBorder,
-        marginTop: 20,
-        height: 70,
+        marginTop: 15,
+        height: 60,
         paddingBottom: 10,
     },
     title: {
         fontWeight: "600",
-        fontSize: 36,
+        fontSize: 30,
         color: palette.black,
         maxWidth: "90%"
     },
     input: {
         fontWeight: "600",
-        fontSize: 36,
+        fontSize: 28,
         color: palette.black,
-        maxWidth: "89%"
+        maxWidth: "89%",
     },
     container: {
         width: "100%",
@@ -39,7 +39,7 @@ export const workoutStyles = StyleSheet.create({
     contentContainer: {
         flexGrow: 1,
         width: "100%",
-        paddingVertical: 20,
+        paddingVertical: 10,
         alignItems: 'center',
         gap: 2
     },

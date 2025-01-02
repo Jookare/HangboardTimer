@@ -111,7 +111,7 @@ const CustomScreen = () => {
                     placeholderTextColor={palette.grayText}
                     editable={true}
                 />
-                <Ionicons name="pencil" size={32} color={palette.dark} />
+                <Ionicons name="pencil" size={26} color={palette.dark} style={{}} />
             </View>
             <ScrollView style={workoutStyles.container} contentContainerStyle={workoutStyles.contentContainer}>
                 <Text style={workoutStyles.text}>Sets</Text>

@@ -31,8 +31,8 @@ export const selectorStyles = StyleSheet.create({
         borderColor: palette.darkBorder,
         borderWidth: 2,
         borderRadius: 50,
-        height: 70,
-        padding: 8,
+        height: 65,
+        padding: 6,
         backgroundColor: palette.white,
         shadowColor: palette.darkBorder,
         elevation: 1

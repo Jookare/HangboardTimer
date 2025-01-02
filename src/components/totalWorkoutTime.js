@@ -32,7 +32,7 @@ const TotalWorkoutTime = ({ workoutValues }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.label}>Workout Total Time:</Text>
+			<Text style={styles.label}>Total workout time:</Text>
 			<View style={styles.timeContainer}>
 				<Text style={styles.timeText}>{displayTime}</Text>
 			</View>

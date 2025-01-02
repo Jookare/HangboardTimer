@@ -30,7 +30,7 @@ export const startButtonStyle = StyleSheet.create({
     startButton: {
         backgroundColor: palette.dark,
         borderRadius: 20,
-        padding: 20,
+        padding: 16,
         flexDirection: "row",
         gap: 6,
         shadowColor: palette.dark,
