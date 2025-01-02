@@ -8,6 +8,7 @@ import { TimeSelector } from '../../../components/selectors/timeSelector';
 import { useWorkoutValues, getWorkoutParams } from '../../../utils/functions';
 import { workoutStyles } from '../styles';
 import { StartButton } from '../../../components/buttons/startButton';
+import TotalWorkoutTime from '../../../components/totalWorkoutTime';
 
 const WorkoutScreen = () => {
     const route = useRoute();
@@ -66,6 +67,7 @@ const WorkoutScreen = () => {
                     setTimeMinutes={setters.setRestTimeSetMinutes}
                     selectorType={"rest between sets"}
                 />
+                <TotalWorkoutTime workoutValues={workoutValues} />
             </ScrollView>
             <View style={[workoutStyles.buttonContainer, { justifyContent: "center" }]}>
                 <StartButton onPress={() => handleNavigation()} />

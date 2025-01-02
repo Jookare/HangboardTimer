@@ -34,6 +34,8 @@ export const selectorStyles = StyleSheet.create({
         height: 70,
         padding: 8,
         backgroundColor: palette.white,
+        shadowColor: palette.darkBorder,
+        elevation: 1
     },
     container: {
         justifyContent: 'center',

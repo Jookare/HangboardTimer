@@ -13,7 +13,8 @@ import SettingsScreen from './src/screens/SettingsScreen';
 import TimerScreen from './src/screens/TimerScreen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { toast, Toasts } from '@backpackapp-io/react-native-toast';
+import { Toasts } from '@backpackapp-io/react-native-toast';
+import { StatusBar } from 'expo-status-bar';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,7 @@ const App = () => {
     <SafeAreaProvider>
       <GestureHandlerRootView>
         <NavigationContainer >
+        <StatusBar style="dark" />
           <Stack.Navigator
             initialRouteName="Main"
             screenOptions={{

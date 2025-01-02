@@ -11,7 +11,9 @@ export const mainButtonStyle = StyleSheet.create({
         flexDirection: "row",
         gap: 30,
         borderWidth: 1,
-        alignSelf: "center"
+        alignSelf: "center",
+        shadowColor: "black",
+        elevation: 1
     },
     buttonText: {
         color: palette.black,
@@ -31,6 +33,8 @@ export const startButtonStyle = StyleSheet.create({
         padding: 20,
         flexDirection: "row",
         gap: 6,
+        shadowColor: palette.dark,
+        elevation: 1,
     },
     startButtonText: {
         fontSize: 20,

@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { View, Text, Alert, TextInput, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, ScrollView } from 'react-native';
 import { NumberSelector } from '../../../components/selectors/numberSelector';
 import { TimeSelector } from '../../../components/selectors/timeSelector';
 import { useWorkoutValues } from '../../../utils/functions';
 import { workoutStyles } from '../styles';
-import { getAllItems, saveItem, deleteItem } from '../../../utils/functions';
+import { getAllItems, saveItem } from '../../../utils/functions';
 import { Ionicons } from '@expo/vector-icons';
 import { SaveWorkoutButton } from '../../../components/buttons/startButton';
 import { palette } from '../../../utils/palette';
+import TotalWorkoutTime from '../../../components/totalWorkoutTime';
 
 const NewScreen = () => {
     const route = useRoute();
@@ -88,6 +89,7 @@ const NewScreen = () => {
                     setTimeMinutes={setters.setRestTimeSetMinutes}
                     selectorType={"rest between sets"}
                 />
+                <TotalWorkoutTime workoutValues={workoutValues} />
             </ScrollView>
             <View style={[workoutStyles.buttonContainer, { justifyContent: "center" }]}>
                 <SaveWorkoutButton onPress={handleSave} text={"Save as workout"} />

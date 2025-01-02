@@ -95,20 +95,26 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
     // Handle editing completion
     const handleSubmitEditing = (setIsFocused) => {
         setIsFocused(false);
-        const totalSeconds = Number(timeMinutes) * 60 + Number(timeSeconds);
-        if (selectorType === "hang time") {
-            updateTime(totalSeconds > 1 ? totalSeconds : 1)
-        } else {
-            updateTime(totalSeconds);
 
-        }
+        // Parse the input values into integers
+        const minutes = parseInt(timeMinutes, 10) || 0; // Default to 0 if parsing fails
+        const seconds = parseInt(timeSeconds, 10) || 0;
+
+        // Compute total seconds and update totalSecondsRef
+        const totalSeconds = minutes * 60 + seconds;
+
+        // Update totalSecondsRef
+        totalSecondsRef.current = totalSeconds;
+
+        // Update the UI to reflect changes
+        updateTime();
     };
-
     // Handle direct input change (temporarily)
     const handleInputChange = (text, type) => {
         const sanitized = text.replace(/[^0-9]/g, '');
         if (type === 'minutes') {
             setTimeMinutes(sanitized);
+            totalSecondsRef.current = Number(timeMinutes) * 60 + Number(timeSeconds);
         } else if (type === 'seconds') {
             setTimeSeconds(sanitized);
         }
@@ -146,7 +152,7 @@ export const TimeSelector = ({ timeMinutes, setTimeMinutes, timeSeconds, setTime
                         onBlur={() => handleSubmitEditing(setIsFocusedMin)}
                         onFocus={() => setIsFocusedMin(true)}
                     />
-                    <Text style={[selectorStyles.text, {textAlignVertical: 'center', fontSize: 28, marginBottom: 4}]}>:</Text>
+                    <Text style={[selectorStyles.text, { textAlignVertical: 'center', fontSize: 28, marginBottom: 4 }]}>:</Text>
                     <TextInput
                         style={[selectorStyles.text, { textAlign: 'center', height: 60, width: 50, }]}
                         underlineColorAndroid={isFocusedSec ? palette.dark : "transparent"}

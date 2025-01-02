@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, Alert, TextInput, ScrollView } from 'react-native';
+import { View, Text, TextInput, ScrollView } from 'react-native';
 import { NumberSelector } from '../../../components/selectors/numberSelector';
 import { TimeSelector } from '../../../components/selectors/timeSelector';
 import { useWorkoutValues } from '../../../utils/functions';
@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { toast } from '@backpackapp-io/react-native-toast';
 import { palette } from '../../../utils/palette';
 import CustomAlert from '../../../components/modals/customModal';
+import TotalWorkoutTime from '../../../components/totalWorkoutTime';
 
 
 const CustomScreen = () => {
@@ -153,6 +154,7 @@ const CustomScreen = () => {
                     setTimeMinutes={setters.setRestTimeSetMinutes}
                     selectorType={"rest between sets"}
                 />
+                <TotalWorkoutTime workoutValues={workoutValues} />
             </ScrollView>
             <View style={[workoutStyles.buttonContainer]}>
                 <RemoveButton onPress={createRemoveButtonAlert} />

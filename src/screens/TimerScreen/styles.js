@@ -23,9 +23,9 @@ export const styles = StyleSheet.create({
         borderRadius: 40,
         padding: 20,
         width: 280,
-        backgroundColor: "rgba(255, 255, 255, 0.75)",
-        borderWidth: 1,
-		borderColor: palette.grayBorder,
+        backgroundColor: "rgb(255, 255, 255)",
+        shadowColor: "#000",
+        elevation: 4,
     },
     timerText: {
         textAlign: "center",
@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     phaseContainer: {
-        marginVertical: 20
+        marginVertical: 20,
     },
     phaseText: {
         fontSize: 40,
@@ -51,9 +51,8 @@ export const styles = StyleSheet.create({
         textAlign: "center",
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 2,
-        backgroundColor: "rgba(255, 255, 255, 0.75)",
-        borderColor: palette.grayBorder,
+        backgroundColor: "rgb(255, 255, 255)",
+        elevation: 2,
     },
     repsetText: {
         fontSize: 24,

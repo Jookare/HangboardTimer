@@ -164,7 +164,7 @@ class SettingsScreen extends Component {
 
 					</View>
 				</View>
-				<Text style={styles.heading}>App version V.1.2.0</Text>
+				<Text style={styles.heading}>App version V.1.2.1</Text>
 				<CustomAlert
 					visible={alertVisible}
 					setVisible={this.setAlertVisible}
@@ -218,7 +218,9 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		borderRadius: 20,
 		height: 60,
-		justifyContent: "center"
+		justifyContent: "center",
+		shadowColor: palette.grayBorder,
+		elevation: 1
 	},
 	removeButton: {
 		borderColor: palette.grayIconBG,

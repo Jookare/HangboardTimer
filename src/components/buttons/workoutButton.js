@@ -10,7 +10,7 @@ const WorkoutButton = ({ color, borderColor, iconBG, navID, onPress, text, iconN
             {
                 opacity: pressed ? 0.5 : 1.0,
                 backgroundColor: color,
-                borderColor: borderColor
+                borderColor: borderColor,
             }]}
             onPress={() => onPress(navID)}>
             <View style={[mainButtonStyle.iconContainer, { backgroundColor: iconBG }]}>

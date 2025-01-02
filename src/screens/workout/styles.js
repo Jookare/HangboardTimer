@@ -18,7 +18,7 @@ export const workoutStyles = StyleSheet.create({
         borderColor: palette.darkBorder,
         marginTop: 20,
         height: 70,
-        paddingBottom: 10
+        paddingBottom: 10,
     },
     title: {
         fontWeight: "600",
@@ -30,11 +30,11 @@ export const workoutStyles = StyleSheet.create({
         fontWeight: "600",
         fontSize: 36,
         color: palette.black,
-        maxWidth: "90%"
+        maxWidth: "89%"
     },
     container: {
         width: "100%",
-        maxWidth: 600
+        maxWidth: 600,
     },
     contentContainer: {
         flexGrow: 1,
