@@ -38,7 +38,7 @@ export const startButtonStyle = StyleSheet.create({
     },
     startButtonText: {
         fontSize: 20,
-        width: 90,
+        width: 95,
         color: palette.white
     },
 })

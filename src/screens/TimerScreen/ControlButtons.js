@@ -24,7 +24,7 @@ const ControlButtons = ({
                 <Ionicons name="play-back" size={20}
                     style={{ opacity: previousFlag() ? 0.5 : 1 }}
                 />
-                <Text style={{ fontSize: 16, opacity: previousFlag() ? 0.5 : 1 }}>
+                <Text style={{ fontSize: 16, width: "100%", textAlign: "center", opacity: previousFlag() ? 0.5 : 1 }}>
                     REP
                 </Text>
             </Pressable>
@@ -53,7 +53,7 @@ const ControlButtons = ({
                 <Ionicons name="play-forward" size={20}
                     style={{ opacity: nextFlag() ? 0.5 : 1 }}
                 />
-                <Text style={{ fontSize: 16, opacity: nextFlag() ? 0.5 : 1 }}>
+                <Text style={{ fontSize: 16, width: "100%", textAlign: "center", opacity: nextFlag() ? 0.5 : 1 }}>
                     REP
                 </Text>
             </Pressable>

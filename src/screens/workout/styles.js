@@ -28,8 +28,10 @@ export const workoutStyles = StyleSheet.create({
     },
     input: {
         fontWeight: "600",
+        height: 50,
         fontSize: 28,
         color: palette.black,
+        width: "auto",
         maxWidth: "89%",
     },
     container: {

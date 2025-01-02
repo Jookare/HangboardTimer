@@ -117,7 +117,7 @@ class SettingsScreen extends Component {
 				<View style={styles.container}>
 					<Text style={styles.heading}>Audio</Text>
 					<View style={[styles.itemContainer, styles.center]}>
-						<Text>Sound</Text>
+						<Text style={{width: "100", }}>Sound</Text>
 						<View style={styles.switchContainer}>
 							<Text style={{ fontWeight: "500" }}>{audio ? "on" : "off"}</Text>
 							<Switch
