@@ -61,19 +61,24 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
     }, [time]);
 
     const handlePhaseTransition = () => {
-        if (playSoundEnabled && (currentPhase === PHASES.REST_AFTER_HANG || currentPhase === PHASES.COUNTDOWN)) {
-            if (time === 30) {
-                console.log("TIME == 3")
-                playSound('ready');
+        if (playSoundEnabled) {
+            // Extra countdown sounds
+            if (currentPhase === PHASES.COUNTDOWN) {
+                if (time === 30) { // 3 seconds left
+                    playSound('ready');
+                } else if (time === 20) { // 2 seconds left
+                    playSound('ready');
+                } else if (time === 10) { // 1 second left
+                    playSound('ready');
+                }
             }
-            else if (time === 20) {
-                playSound('ready');
-            }
-            else if (time === 10) {
-                playSound('ready');
+    
+            // Play sound at the end of REST_BETWEEN_SETS
+            if (currentPhase === PHASES.REST_BETWEEN_SETS && time === 0 && preparation > 3) {
+                playSound('ready'); // Signals that the next phase (COUNTDOWN) is starting
             }
         }
-
+    
         if (time <= 0) {
             if (playSoundEnabled) {
                 if (currentPhase === PHASES.COUNTDOWN || currentPhase === PHASES.REST_AFTER_HANG) {
@@ -82,6 +87,7 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
                     playSound('end');
                 }
             }
+            
             transitionToNextPhase();
         }
     };

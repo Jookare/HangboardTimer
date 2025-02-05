@@ -164,7 +164,7 @@ class SettingsScreen extends Component {
 
 					</View>
 				</View>
-				<Text style={styles.heading}>App version V.1.2.1</Text>
+				<Text style={styles.heading}>App version V.1.2.2</Text>
 				<CustomAlert
 					visible={alertVisible}
 					setVisible={this.setAlertVisible}
