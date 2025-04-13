@@ -19,8 +19,6 @@ A Simple and customizable hangboard timer🧗
 - 🚫 No Ads or Registration: Train without interruptions or account setup.
 - 💾 Offline Storage: Your workouts are saved securely on your device.
 
-> [!NOTE]  
-> Hopefully someday on Google Play Store
 ---
 
 
