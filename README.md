@@ -3,8 +3,14 @@
     <h1 align="center">Hangboard Timer</h1>
 </p>
 
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.jookare.HangboardTimer">
+    <img alt="google-play" src="https://github.com/shootismoke/webapp/blob/master/assets/images/play-store.png?raw=true" width="200" />
+  </a>
+</p>
 
 A Simple and customizable hangboard timer🧗
+
 
 ### Features:
 
