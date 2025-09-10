@@ -15,8 +15,8 @@ export const SaveButton = ({ onPress, text }) => {
             ]}
             onPress={onPress}>
 
-            <Ionicons name="save-outline" size={24} color="black" />
-            <Text>Save</Text>
+            <Ionicons name="save-outline" size={24} color={palette.dark} />
+            <Text style={{fontSize: 12}}>Save</Text>
         </Pressable>
     )
 }
@@ -31,8 +31,8 @@ export const RemoveButton = ({ onPress }) => {
                 }, [sideButtonStyle.sideButton, sideButtonStyle.removeButton]
             ]}
             onPress={onPress}>
-            <Ionicons name="trash-outline" size={24} color="black" />
-            <Text>Remove</Text>
+            <Ionicons name="trash-outline" size={24} color={palette.dark} />
+            <Text style={{fontSize: 12}}>Remove</Text>
         </Pressable>
     )
 }

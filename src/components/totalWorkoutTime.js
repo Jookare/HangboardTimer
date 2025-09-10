@@ -21,12 +21,12 @@ const TotalWorkoutTime = ({ workoutValues }) => {
 		let minutes = Math.floor(totalSeconds / secondsInMinute);
 		let seconds = totalSeconds % secondsInMinute;
 
-		if (hours >= 24) {
-			setDisplayTime("> 1 day");
+		if (hours >= 1) {
+			setDisplayTime("> 1 hour");
 		} else {
 			const formattedMinutes = String(minutes).padStart(2, '0');
 			const formattedSeconds = String(seconds).padStart(2, '0');
-			setDisplayTime(`${hours} h ${formattedMinutes} m ${formattedSeconds} s`);
+			setDisplayTime(`${formattedMinutes} m ${formattedSeconds} s`);
 		}
 	}, [workoutValues]);
 

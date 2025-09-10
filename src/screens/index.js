@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, Pressable, useWindowDimensions } from 'react-native';
 import { palette } from '../utils/palette';
-import { handleButtonPress } from '../navigation/navigationHandler';
+
+import { handleAppNavigation } from '../navigation/navigationHandler';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import WorkoutButton from '../components/buttons/workoutButton';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,55 +11,25 @@ import { getItem, getAllItems } from "../utils/functions"
 const ButtonData = [
     { text: "Short Max Hangs", color: palette.blue, borderColor: palette.blueBorder, iconBG: palette.blueIconBG, navID: "#workout#@1", iconName: "flame" },
     { text: "Repeaters", color: palette.blue, borderColor: palette.blueBorder, iconBG: palette.blueIconBG, navID: "#workout#@2", iconName: "flame" },
-    // { text: "4 x 4", color: palette.green, borderColor: palette.greenBorder, iconBG: palette.greenIconBG, navID: "#workout#@3", iconName: "pulse-sharp" },
     { text: "New workout", color: palette.yellow, borderColor: palette.yellowBorder, iconBG: palette.yellowIconBG, navID: "#workout#@new", iconName: "add-circle-outline" },
 ];
 
 const MainScreen = () => {
-    const navigation = useNavigation(); // Get navigation object
+    // Get navigation object
+    const navigation = useNavigation();
     const [workouts, setWorkouts] = useState([]);
-
-    const handleClick = useCallback(() => {
-        try {
-            navigation.navigate("Settings");
-
-        } catch (error) {
-            console.error("Navigation error:", error);
-            toast.error(error, {
-                width: 300,
-                styles: {
-                    view: {
-                        backgroundColor: '#f7f7f7',
-                        borderRadius: 8,
-                        padding: 16,
-                    },
-                    text: {
-                        color: 'black',
-                    },
-                    indicator: {
-                        marginRight: 16,
-                    },
-                },
-            });
-        }
-    }, [navigation]);
-
 
     const fetchWorkouts = async () => {
         const keys = await getAllItems();
-
-        let workouts = [];
-        let value;
+        const workoutPromises = [];
         for (let i = 0; i < keys.length; i++) {
             if (keys[i].startsWith('#')) {
-                value = await getItem(keys[i]);
-                console.log(value)
-                workouts.push(value);
+                workoutPromises.push(getItem(keys[i])); // Start all getItem calls
             }
         }
-        setWorkouts(workouts);
+        const results = await Promise.all(workoutPromises); // Wait for all to complete
+        setWorkouts(results.filter(Boolean)); // Filter out any null/undefined results
     };
-
     useFocusEffect(
         React.useCallback(() => {
             fetchWorkouts();
@@ -73,28 +44,31 @@ const MainScreen = () => {
                     source={require("../../assets/Group.png")}
                     style={styles.titleImage}
                 />
-                {settingsButton(handleClick)}
-                {ButtonData.slice(0, 4).map((button, index) => (
+                <LogButton />
+                <SettingsButton />
+                {ButtonData.map((button, index) => ( // Removed slice(0,4) as it might be unintentional
                     <WorkoutButton
-                        key={index}
+                        key={index} // Consider using a more stable key if ButtonData can change order
                         color={button.color}
                         borderColor={button.borderColor}
                         iconBG={button.iconBG}
-                        onPress={(ID) => handleButtonPress(navigation, ID)}
+                        // Use the unified handler
+                        onPress={(ID) => handleAppNavigation(navigation, ID)}
                         navID={button.navID}
                         text={button.text}
                         iconName={button.iconName}
                     />
                 ))}
                 <View style={styles.divider}></View>
-                {workouts.map((item, index) => (
+                {workouts.map((item) => ( // item.id should be unique
                     <WorkoutButton
                         key={item.id}
                         color={palette.red}
                         borderColor={palette.redBorder}
                         iconBG={palette.redIconBG}
-                        onPress={(ID) => handleButtonPress(navigation, ID)}
-                        navID={item.id}
+                        // Use the unified handler
+                        onPress={(ID) => handleAppNavigation(navigation, ID)}
+                        navID={item.id} // This ID will be caught by the default case in handleAppNavigation
                         text={item.name}
                         iconName={"barbell"}
                     />
@@ -106,33 +80,32 @@ const MainScreen = () => {
 }
 
 
-const settingsButton = (handleClick) => {
-
-    const { width, height } = useWindowDimensions(); // Get screen dimensions
-
-    // Adjust styles dynamically based on screen width
-    const isSmallScreen = width < 360; // Example breakpoint for smaller screens
-    const buttonSize = isSmallScreen ? 40 : 60; // Smaller button for smaller screens
-    const iconSize = isSmallScreen ? 20 : 28; // Adjust icon size accordingly
+// Make SettingsButton and LogButton self-contained components
+const SettingsButton = () => {
+    const navigation = useNavigation();
+    const { width } = useWindowDimensions();
+    const isSmallScreen = width < 360;
+    const buttonSize = isSmallScreen ? 40 : 60;
+    const iconSize = isSmallScreen ? 20 : 28;
     const y = isSmallScreen ? 16 : 5;
 
     return (
         <Pressable
-            onPress={handleClick}
+            onPress={() => handleAppNavigation(navigation, "settings")} // Directly call the handler
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
             style={({ pressed }) => [
                 {
-                  position: "absolute",
-                  right: 4, // Adjust margin for smaller screens
-                  top: y,
-                  width: buttonSize,
-                  height: buttonSize,
-                  borderRadius: 8, // Optional: make it circular for smaller screens
-                  backgroundColor: pressed ? palette.grayIconBG : 'transparent',
-                  justifyContent: "center",
-                  alignItems: "center",
+                    position: "absolute",
+                    right: 4,
+                    top: y,
+                    width: buttonSize,
+                    height: buttonSize,
+                    borderRadius: 8,
+                    backgroundColor: pressed ? palette.grayIconBG : 'transparent',
+                    justifyContent: "center",
+                    alignItems: "center",
                 },
-              ]}
+            ]}
             accessible={true}
             accessibilityLabel="Settings"
             accessibilityRole="button"
@@ -142,7 +115,39 @@ const settingsButton = (handleClick) => {
     )
 }
 
+const LogButton = () => {
+    const navigation = useNavigation();
+    const { width } = useWindowDimensions();
+    const isSmallScreen = width < 360;
+    const buttonSize = isSmallScreen ? 40 : 60;
+    const iconSize = isSmallScreen ? 20 : 28;
+    const y = isSmallScreen ? 16 : 5;
 
+    return (
+        <Pressable
+            onPress={() => handleAppNavigation(navigation, "log")} // Directly call the handler
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+            style={({ pressed }) => [
+                {
+                    position: "absolute",
+                    left: 4,
+                    top: y,
+                    width: buttonSize,
+                    height: buttonSize,
+                    borderRadius: 8,
+                    backgroundColor: pressed ? palette.grayIconBG : 'transparent',
+                    justifyContent: "center",
+                    alignItems: "center",
+                },
+            ]}
+            accessible={true}
+            accessibilityLabel="Log" // Changed from "Stats" to "Log" to match actionID
+            accessibilityRole="button"
+        >
+            <Ionicons name="calendar-outline" size={iconSize} color={palette.dark} />
+        </Pressable>
+    )
+}
 
 const styles = StyleSheet.create({
     button: {

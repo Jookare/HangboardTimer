@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Button, Pressable } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
 import { useWorkoutTimer } from './hooks/useWorkoutTimer';
 
@@ -41,11 +40,11 @@ const TimerScreen = () => {
             </View>
             <View style={styles.statusContainer}>
                 <View style={styles.repsetContainer}>
-                    <Text style={{fontSize: 16, width: 85, textAlign: "center"}}>SETS LEFT</Text>
+                    <Text style={{fontSize: 16, textAlign: "center", flexShrink: 1}}>SETS LEFT</Text>
                     <Text style={styles.repsetText}>{setsLeft}</Text>
                 </View>
                 <View style={styles.repsetContainer}>
-                    <Text style={{fontSize: 16, width: 85, textAlign: "center"}}>REPS LEFT</Text>
+                    <Text style={{fontSize: 16, textAlign: "center", flexShrink: 1}}>REPS LEFT</Text>
                     <Text style={styles.repsetText}>{repsLeft}</Text>
                 </View>
             </View>

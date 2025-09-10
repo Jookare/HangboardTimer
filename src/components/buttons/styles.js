@@ -38,7 +38,7 @@ export const startButtonStyle = StyleSheet.create({
     },
     startButtonText: {
         fontSize: 20,
-        width: 95,
+        flexShrink: 1,
         color: palette.white
     },
 })
@@ -46,11 +46,15 @@ export const startButtonStyle = StyleSheet.create({
 
 export const sideButtonStyle = StyleSheet.create({
     sideButton: {
-        width: 60,
+        width: 70,
         aspectRatio: 1,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 8,
+        borderRadius: 20,
+        padding: 8,
+        flexShrink: 1,
+        borderWidth: 1,
+        borderColor: palette.dark
     },
     saveButton: {
         // color: palette.green,

@@ -1,5 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
-import { Audio } from 'expo-av';
+import { useAudioPlayer  } from 'expo-audio';
 
 const soundFiles = {
     ready: require('../../../../assets/ready-beep.mp3'),
@@ -8,23 +7,13 @@ const soundFiles = {
 };
 
 
-
 export const useSounds = () => {
+    const player = useAudioPlayer(soundFiles['ready']);
 
     function playSound(type) {
         let sound = soundFiles[type];
-        console.log(`Playing sound: ${type}`);
-        Audio.Sound.createAsync(
-            sound,
-            { shouldPlay: true }
-        ).then((res) => {
-            res.sound.setOnPlaybackStatusUpdate((status) => {
-                if (!status.didJustFinish) return;
-                console.log('Unloading ' + type);
-                res.sound.unloadAsync().catch(() => { });
-            });
-        }).catch((error) => { });
-
+        player.replace(sound)
+        player.play();
     };
 
     return { playSound };

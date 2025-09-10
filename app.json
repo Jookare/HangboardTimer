@@ -18,7 +18,9 @@
         "backgroundColor": "#EF5452"
       },
       "package": "com.jookare.HangboardTimer",
-      "permissions": ["android.permission.MODIFY_AUDIO_SETTINGS"]
+      "permissions": [
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +32,7 @@
     },
     "plugins": [
       [
-        "expo-av",
+        "expo-audio",
         {
           "microphonePermission": false
         }
@@ -44,7 +46,8 @@
             "allowBackup": false
           }
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "runtimeVersion": {
       "policy": "appVersion"

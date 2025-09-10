@@ -13,8 +13,10 @@ export const StartButton = ({ onPress }) => {
             ]}
             onPress={onPress}>
 
-            <Text style={startButtonStyle.startButtonText}>Start Now</Text>
-            <Ionicons name="caret-forward" size={26} color="#fff" />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={startButtonStyle.startButtonText}>Start Now</Text>
+                <Ionicons name="caret-forward" size={26} color="#fff" />
+            </View>
         </Pressable>
     )
 }
@@ -27,8 +29,12 @@ export const SaveWorkoutButton = ({ onPress }) => {
             ]}
             onPress={onPress}>
 
-            <Text style={{fontSize: 20, width: 150, color: palette.white}}>Save as workout</Text>
-            <Ionicons name="save-outline" size={26} color="white" />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ fontSize: 20, color: palette.white, marginRight: 8 }}>
+                Save as workout
+                </Text>
+                <Ionicons name="save-outline" size={26} color="white" />
+            </View>
         </Pressable>
     )
 }

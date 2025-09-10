@@ -3,7 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useTimer } from 'react-use-precision-timer';
 import { useSounds } from './useSounds';
 import { getRemaining } from './useTimerUtils';
-import { getItem } from '../../../utils/functions';
+import { getItem, saveItem, getAllItems } from '../../../utils/functions';
 import { AppState } from 'react-native'
 const PHASES = {
     COUNTDOWN: 'countdown',
@@ -12,8 +12,6 @@ const PHASES = {
     REST_BETWEEN_SETS: 'restBetweenSets',
     COMPLETE: 'complete',
 };
-
-
 
 export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, reps }) => {
     const [currentPhase, setCurrentPhase] = useState(PHASES.HANG);
@@ -100,6 +98,12 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
         };
 
         const completeWorkout = () => {
+            logWorkout({
+                sets: sets,
+                reps: reps,
+                time: (hangTime * sets * reps), // Example of total workout time in tenths of a second
+            });
+
             setSetsLeft(0);
             setRepsLeft(0);
             timer.stop();
@@ -281,6 +285,31 @@ export const useWorkoutTimer = ({ hangTime, restAfterHang, restAfterSet, sets, r
             }
         }
     };
+
+        // Logging function
+    const logWorkout = async (workoutData) => {
+        try {
+            // Get existing logs
+            const existingLogsJSON = await getItem('@workoutHistory');
+            console.log(existingLogsJSON);
+            const existingLogs = existingLogsJSON ? JSON.parse(existingLogsJSON) : [];
+    
+            // Add new log
+            const newLog = {
+                ...workoutData,
+                timestamp: Date.now(), // optional
+            };
+            const updatedLogs = [...existingLogs, newLog];
+    
+            // Save updated logs
+            await saveItem('@workoutHistory', JSON.stringify(updatedLogs));
+    
+            console.log(`Workout logged. Total logs: ${updatedLogs.length}`);
+        } catch (error) {
+            console.error('Failed to log workout:', error);
+        }
+    };
+
 
     return {
         currentPhase, setsLeft, repsLeft, mins, secs, tenths, toggle, previousRep, nextRep, timer,
