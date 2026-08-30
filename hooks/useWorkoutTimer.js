@@ -44,7 +44,7 @@ export const useWorkoutTimer = ({
   const [timerOn, setTimerOn] = useState(false);
 
   const { mins, secs, tenths } = getRemaining(time);
-  const { playSound } = useSounds();
+  const { playSound, warmup } = useSounds();
 
   const handleSetTime = (value) => {
     setTime(value * 10);
@@ -210,6 +210,7 @@ export const useWorkoutTimer = ({
   const toggle = () => {
     if (currentPhase !== PHASES.COMPLETE) {
       if (timer.isStopped()) {
+        if (playSoundEnabled) warmup();
         if (currentPhase !== PHASES.REST_BETWEEN_SETS) {
           if (preparation !== 0) {
             handleSetTime(preparation);
