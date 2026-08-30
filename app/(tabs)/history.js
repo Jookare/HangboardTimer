@@ -1,7 +1,10 @@
-import { useMemo } from 'react';
-import { SectionList, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useMemo, useState } from 'react';
+import { SectionList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import CustomAlert from '@/components/ui/CustomAlert';
+import { useToast } from '@/components/ui/Toast';
 import { palette, shadows } from '@/constants/common';
 import { useHistory } from '@/hooks/useHistory';
 import { formatDuration } from '@/lib/time';
@@ -22,8 +25,19 @@ const timeLabel = (iso) => {
   return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 };
 
+const metaLabel = (item) => {
+  const duration = formatDuration(item.plannedSec || 0);
+  if (item.partial) {
+    const hangs = item.hangs ?? 0;
+    return `${hangs} hang${hangs === 1 ? '' : 's'} · ${duration}`;
+  }
+  return `${item.sets} × ${item.reps} · ${duration}`;
+};
+
 export default function HistoryScreen() {
-  const { history } = useHistory();
+  const { history, remove } = useHistory();
+  const toast = useToast();
+  const [pendingDelete, setPendingDelete] = useState(null);
 
   const sections = useMemo(() => {
     const groups = [];
@@ -59,16 +73,42 @@ export default function HistoryScreen() {
           renderItem={({ item }) => (
             <View style={styles.row}>
               <View style={styles.rowMain}>
-                <Text style={styles.workoutName}>{item.workoutName}</Text>
-                <Text style={styles.meta}>
-                  {item.sets} × {item.reps} · {formatDuration(item.plannedSec || 0)}
-                </Text>
+                <View style={styles.nameRow}>
+                  <Text style={styles.workoutName} numberOfLines={1}>
+                    {item.workoutName}
+                  </Text>
+                  {item.partial && <Text style={styles.partialTag}>PARTIAL</Text>}
+                </View>
+                <Text style={styles.meta}>{metaLabel(item)}</Text>
               </View>
               <Text style={styles.time}>{timeLabel(item.completedAt)}</Text>
+              <TouchableOpacity
+                hitSlop={8}
+                style={styles.deleteButton}
+                onPress={() => setPendingDelete(item)}
+              >
+                <Ionicons name="trash-outline" size={18} color={palette.inactive} />
+              </TouchableOpacity>
             </View>
           )}
         />
       )}
+
+      <CustomAlert
+        visible={pendingDelete != null}
+        setVisible={() => setPendingDelete(null)}
+        onConfirm={() => {
+          if (pendingDelete) remove(pendingDelete.id);
+          toast.show('Entry deleted');
+        }}
+        title="Delete log entry"
+        message={
+          pendingDelete
+            ? `Remove the ${pendingDelete.workoutName} session from your log?`
+            : ''
+        }
+        confirmLabel="Delete"
+      />
     </SafeAreaView>
   );
 }
@@ -104,16 +144,29 @@ const styles = StyleSheet.create({
     backgroundColor: palette.white,
     borderRadius: 12,
     padding: 14,
+    gap: 10,
     ...shadows.small,
   },
   rowMain: {
     flex: 1,
     gap: 2,
   },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   workoutName: {
+    flexShrink: 1,
     fontSize: 16,
     fontWeight: '600',
     color: palette.dark,
+  },
+  partialTag: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: palette.yellow,
+    letterSpacing: 0.5,
   },
   meta: {
     fontSize: 13,
@@ -122,6 +175,9 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 13,
     color: palette.inactive,
+  },
+  deleteButton: {
+    padding: 4,
   },
   empty: {
     color: palette.subtitle,

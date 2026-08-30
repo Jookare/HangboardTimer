@@ -1,7 +1,7 @@
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 import {
   cancelAnimation,
   Easing,
@@ -20,7 +20,7 @@ import { palette } from '@/constants/common';
 import { useHistory } from '@/hooks/useHistory';
 import { useSettings } from '@/hooks/useSettings';
 import { PHASES, useWorkoutTimer } from '@/hooks/useWorkoutTimer';
-import { plannedWorkoutSeconds } from '@/lib/time';
+import { hangsPlannedSeconds, plannedWorkoutSeconds } from '@/lib/time';
 
 const RING_SIZE = 260;
 
@@ -35,6 +35,7 @@ const PHASE_RING_COLOR = {
 export default function TimerScreen() {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
   // Keep the screen on during a workout (native only — the web Wake Lock API
@@ -77,19 +78,74 @@ export default function TimerScreen() {
   const isComplete = currentPhase === PHASES.COMPLETE;
   const running = timer.isRunning();
 
-  const savedRef = useRef(false);
+  const totalHangs = config.sets * config.reps;
+  const hangsToGo = Math.max(0, (setsLeft - 1) * config.reps + repsLeft);
+  const hangsDone = Math.max(0, totalHangs - hangsToGo);
+
   const addHistory = history.add;
-  useEffect(() => {
-    if (isComplete && !savedRef.current) {
+  const savedRef = useRef(false);
+  const leavingRef = useRef(false);
+
+  const logSession = useCallback(
+    (partial) => {
+      if (savedRef.current) return;
       savedRef.current = true;
+      const hangs = partial ? hangsDone : totalHangs;
+      if (hangs <= 0) return;
       addHistory({
         workoutName: config.name,
-        sets: config.sets,
         reps: config.reps,
-        plannedSec: plannedWorkoutSeconds(config),
+        sets: partial ? Math.floor(hangs / config.reps) : config.sets,
+        hangs,
+        plannedSec: partial
+          ? hangsPlannedSeconds(config, hangs)
+          : plannedWorkoutSeconds(config),
+        partial: !!partial,
       });
-    }
-  }, [isComplete, config, addHistory]);
+    },
+    [addHistory, config, hangsDone, totalHangs],
+  );
+
+  useEffect(() => {
+    if (isComplete) logSession(false);
+  }, [isComplete, logSession]);
+
+  // Offer to log a partial session when leaving mid-workout.
+  const leaveStateRef = useRef({});
+  leaveStateRef.current = { isComplete, hangsDone };
+  useEffect(() => {
+    const unsub = navigation.addListener('beforeRemove', (e) => {
+      const { isComplete: done, hangsDone: hangs } = leaveStateRef.current;
+      if (done || hangs <= 0 || savedRef.current || leavingRef.current) return;
+      // Alert.alert has no UI on web — don't trap the user there.
+      if (Platform.OS === 'web') return;
+      e.preventDefault();
+      Alert.alert(
+        'Save this session?',
+        `You've completed ${hangs} hang${hangs === 1 ? '' : 's'}.`,
+        [
+          { text: 'Keep going', style: 'cancel' },
+          {
+            text: 'Discard',
+            style: 'destructive',
+            onPress: () => {
+              leavingRef.current = true;
+              navigation.dispatch(e.data.action);
+            },
+          },
+          {
+            text: 'Save',
+            onPress: () => {
+              logSession(true);
+              leavingRef.current = true;
+              navigation.dispatch(e.data.action);
+            },
+          },
+        ],
+      );
+    });
+    return unsub;
+  }, [navigation, logSession]);
 
   const phaseDuration =
     {
@@ -138,7 +194,6 @@ export default function TimerScreen() {
   const onNext = useCallback(() => handlerRef.current.nextRep(), []);
 
   const ringColor = PHASE_RING_COLOR[currentPhase] ?? palette.phaseHang;
-  const hangsToGo = Math.max(0, (setsLeft - 1) * config.reps + repsLeft);
 
   const previousDisabled =
     timer.isStopped() && repsLeft === config.reps && setsLeft === config.sets;
