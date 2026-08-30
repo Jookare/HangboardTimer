@@ -14,6 +14,14 @@ export const PHASES = {
   COMPLETE: 'complete',
 };
 
+// The cue each phase fires when it ends — used to pre-warm the player.
+const PHASE_END_SOUND = {
+  [PHASES.COUNTDOWN]: 'start',
+  [PHASES.HANG]: 'end',
+  [PHASES.REST_AFTER_HANG]: 'start',
+  [PHASES.REST_BETWEEN_SETS]: 'ready',
+};
+
 /**
  * Ported (near-verbatim) from the pre-2.0 TimerScreen hook. The phase state
  * machine and prev/next-rep logic are unchanged; only the inputs differ:
@@ -44,7 +52,15 @@ export const useWorkoutTimer = ({
   const [timerOn, setTimerOn] = useState(false);
 
   const { mins, secs, tenths } = getRemaining(time);
-  const { playSound, warmup } = useSounds();
+  const { playSound, prewarm } = useSounds();
+
+  // Pre-warm the cue a phase will fire — once when the phase begins (covers
+  // short phases) and again with ~3s to go (a fresh warm-up for long phases).
+  useEffect(() => {
+    if (!playSoundEnabled) return;
+    const cue = PHASE_END_SOUND[currentPhase];
+    if (cue) prewarm(cue);
+  }, [currentPhase, playSoundEnabled, timerOn, prewarm]);
 
   const handleSetTime = (value) => {
     setTime(value * 10);
@@ -63,6 +79,11 @@ export const useWorkoutTimer = ({
 
   const handlePhaseTransition = () => {
     if (playSoundEnabled) {
+      // ~3s to go: refresh the warm-up for this phase's end cue.
+      if (time === 30) {
+        const cue = PHASE_END_SOUND[currentPhase];
+        if (cue) prewarm(cue);
+      }
       if (currentPhase === PHASES.COUNTDOWN) {
         if (time === 30 || time === 20 || time === 10) {
           playSound('ready');
@@ -210,7 +231,6 @@ export const useWorkoutTimer = ({
   const toggle = () => {
     if (currentPhase !== PHASES.COMPLETE) {
       if (timer.isStopped()) {
-        if (playSoundEnabled) warmup();
         if (currentPhase !== PHASES.REST_BETWEEN_SETS) {
           if (preparation !== 0) {
             handleSetTime(preparation);

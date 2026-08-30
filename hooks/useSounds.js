@@ -7,117 +7,128 @@ const SOURCES = {
   end: require('@/assets/end-beep.mp3'),
 };
 
-// Plays a player silently (volume 0) so Android fully decodes it and acquires
-// audio focus. Restores the volume when it finishes (or after a timeout).
-const primePlayer = (player) => {
-  try {
-    player.volume = 0;
-    const restore = () => {
-      try {
-        player.pause();
-        player.seekTo(0);
-        player.volume = 1;
-      } catch {
-        // player removed
-      }
-    };
-    const sub = player.addListener?.('playbackStatusUpdate', (status) => {
-      if (status?.didJustFinish) {
-        restore();
-        sub?.remove?.();
-      }
-    });
-    player.play();
-    setTimeout(() => {
-      restore();
-      sub?.remove?.();
-    }, 3000);
-  } catch {
-    // priming is best-effort
-  }
-};
-
-// Preloads the three timer beeps and replays them with near-zero latency.
-// Same API as the pre-2.0 hook: playSound('ready' | 'start' | 'end').
-//
-// Android drops the *first* audible playback of a sound while it is still
-// decoding / acquiring audio focus. So every player is primed silently on mount
-// and again when a workout is started (`warmup()`), well before the first
-// audible cue is due.
+/**
+ * Timer beeps.
+ *
+ * Android's ExoPlayer drops (or badly delays) the *first* playback of a clip
+ * that has been idle, which is why the first hang-end / rest-end cue was silent
+ * on Android while iOS was fine. So each cue is created and silently pre-rolled
+ * a few seconds before it is due (`prewarm(type)`, called from the timer on
+ * phase changes), then `playSound(type)` fires that already-warm player.
+ */
 export const useSounds = () => {
-  const playersRef = useRef(null);
+  const stashRef = useRef({});
+  const liveRef = useRef(new Set());
+
+  const dispose = useCallback((player) => {
+    liveRef.current.delete(player);
+    try {
+      player.remove();
+    } catch {
+      // already released
+    }
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    const players = {};
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      interruptionMode: 'mixWithOthers',
+      shouldPlayInBackground: false,
+    }).catch(() => {});
 
-    (async () => {
-      try {
-        // 'mixWithOthers' → on Android no audio focus is requested, which
-        // removes the focus-acquisition delay that was swallowing the first
-        // beep. Also lets cues play over the user's music.
-        await setAudioModeAsync({
-          playsInSilentMode: true,
-          interruptionMode: 'mixWithOthers',
-          shouldPlayInBackground: false,
-        });
-      } catch {
-        // non-fatal
-      }
-      if (cancelled) return;
-
-      for (const [key, source] of Object.entries(SOURCES)) {
-        try {
-          const player = createAudioPlayer(source);
-          players[key] = player;
-          primePlayer(player);
-        } catch (e) {
-          console.warn(`useSounds: failed to load ${key}`, e);
-        }
-      }
-      if (!cancelled) playersRef.current = players;
-    })();
-
+    const live = liveRef.current;
+    const stash = stashRef.current;
     return () => {
-      cancelled = true;
-      Object.values(players).forEach((p) => {
+      live.forEach((p) => {
         try {
           p.remove();
         } catch {
-          // already released
+          // ignore
         }
       });
-      playersRef.current = null;
+      live.clear();
+      Object.keys(stash).forEach((k) => delete stash[k]);
     };
   }, []);
 
-  const warmup = useCallback(() => {
-    const players = playersRef.current;
-    if (!players) return;
-    Object.values(players).forEach(primePlayer);
-  }, []);
+  // Create + silently exercise a player so the next real play is instant.
+  const prewarm = useCallback(
+    (type) => {
+      const source = SOURCES[type];
+      if (!source) return;
 
-  const playSound = useCallback((type) => {
-    const player = playersRef.current?.[type];
-    if (!player) return;
-    // Force audible — a priming pass may have left volume at 0.
-    try {
-      player.muted = false;
-      player.volume = 1;
-    } catch {
-      // ignore
-    }
-    try {
-      player.seekTo(0);
-    } catch {
-      // not seekable yet — already at 0
-    }
-    try {
-      player.play();
-    } catch (e) {
-      console.warn(`useSounds: failed to play ${type}`, e);
-    }
-  }, []);
+      const previous = stashRef.current[type];
+      if (previous) dispose(previous);
 
-  return { playSound, warmup };
+      let player;
+      try {
+        player = createAudioPlayer(source);
+      } catch {
+        return;
+      }
+      liveRef.current.add(player);
+      stashRef.current[type] = player;
+
+      try {
+        player.volume = 0;
+        player.play();
+        setTimeout(() => {
+          try {
+            player.pause();
+            player.seekTo(0);
+            player.volume = 1;
+          } catch {
+            // ignore
+          }
+        }, 350);
+      } catch {
+        // priming is best effort
+      }
+    },
+    [dispose],
+  );
+
+  const playSound = useCallback(
+    (type) => {
+      const source = SOURCES[type];
+      if (!source) return;
+
+      let player = stashRef.current[type];
+      if (player) {
+        stashRef.current[type] = null;
+      } else {
+        try {
+          player = createAudioPlayer(source);
+          liveRef.current.add(player);
+        } catch (e) {
+          console.warn(`useSounds: failed to create ${type}`, e);
+          return;
+        }
+      }
+
+      try {
+        player.muted = false;
+        player.volume = 1;
+        player.seekTo(0);
+      } catch {
+        // ignore
+      }
+      try {
+        const sub = player.addListener?.('playbackStatusUpdate', (status) => {
+          if (status?.didJustFinish) {
+            sub?.remove?.();
+            dispose(player);
+          }
+        });
+        player.play();
+        setTimeout(() => dispose(player), 4000);
+      } catch (e) {
+        console.warn(`useSounds: failed to play ${type}`, e);
+        dispose(player);
+      }
+    },
+    [dispose],
+  );
+
+  return { playSound, prewarm };
 };
