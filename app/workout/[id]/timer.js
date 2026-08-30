@@ -119,14 +119,13 @@ export default function TimerScreen() {
   );
 
   const leaveActions = [
-    { label: 'Keep going', style: 'default', onPress: () => {} },
     {
-      label: 'Leave without saving',
-      style: 'destructive',
+      label: 'Close',
+      style: 'secondary',
       onPress: () => navigation.dispatch(pendingLeave),
     },
     {
-      label: 'Save & leave',
+      label: 'Log & Close',
       style: 'primary',
       onPress: () => {
         logSession(true);
@@ -252,10 +251,10 @@ export default function TimerScreen() {
       )}
 
       <CustomAlert
+        inline
         visible={pendingLeave != null}
         setVisible={() => setPendingLeave(null)}
-        title="Leave workout?"
-        message={`You've done ${hangsDone} hang${hangsDone === 1 ? '' : 's'} so far.`}
+        title="Close timer?"
         actions={leaveActions}
       />
     </View>
