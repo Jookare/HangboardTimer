@@ -13,10 +13,10 @@ A simple and customizable hangboard timer 🧗
 
 ### Features
 
-- ⚒️ **Custom workouts** – create, edit and save your own sets/reps/rest schemes
-- ⏱️ **Reliable timer** – prep countdown, per-rep and per-set rest, sound cues, background pause/resume, skip forward/back a rep
-- 📒 **Training log** – every finished session is saved on device
-- 🚫 **No ads, no account, offline** – all data stays on your phone
+- ⚒️ **Custom workouts** - create, edit and save your own sets/reps/rest schemes
+- ⏱️ **Reliable timer** - prep countdown, per-rep and per-set rest, sound cues, background pause/resume, skip forward/back a rep
+- 📒 **Training log** - every finished session is saved on device
+- 🚫 **No ads, no account, offline** - all data stays on your phone
 
 ---
 

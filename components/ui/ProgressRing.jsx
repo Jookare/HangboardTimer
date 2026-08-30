@@ -1,17 +1,17 @@
 import { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import Animated, { useAnimatedProps } from 'react-native-reanimated';
+import Svg, { Circle } from 'react-native-svg';
 
 import { palette } from '@/constants/common';
 
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
 /**
- * Dependency-free circular progress ring (no SVG / Skia).
- *
- * Two half-width wrappers each clip a full-size ring; rotating those rings sweeps
- * the arc. `progress` is a Reanimated shared value in 0..1 (1 = full ring),
- * animated once per phase by the caller — the sweep then runs on the UI thread
- * with no React re-render per frame. Rotation is about each ring's own centre
- * (= the container centre), so no `transformOrigin` is required.
+ * Circular progress ring. A single SVG stroke whose `strokeDashoffset` is driven
+ * on the UI thread from a Reanimated shared value (`progress`, 0..1, 1 = full
+ * ring) — the caller animates that value once per phase, so nothing re-renders
+ * per frame. Starts at 12 o'clock and empties clockwise.
  */
 const ProgressRing = ({
   size = 240,
@@ -22,43 +22,41 @@ const ProgressRing = ({
   children,
 }) => {
   const half = size / 2;
+  const radius = half - strokeWidth / 2;
+  const circumference = 2 * Math.PI * radius;
 
-  // right wrapper reveals 0 -> 0.5, left wrapper reveals 0.5 -> 1
-  const rightStyle = useAnimatedStyle(() => {
+  const animatedProps = useAnimatedProps(() => {
+    'worklet';
     const p = Math.min(1, Math.max(0, progress.value));
-    return { transform: [{ rotate: `${180 + Math.min(p, 0.5) * 360}deg` }] };
+    return { strokeDashoffset: circumference * (1 - p) };
   });
-  const leftStyle = useAnimatedStyle(() => {
-    const p = Math.min(1, Math.max(0, progress.value));
-    return { transform: [{ rotate: `${180 + Math.max(p - 0.5, 0) * 360}deg` }] };
-  });
-
-  const ring = {
-    position: 'absolute',
-    top: 0,
-    width: size,
-    height: size,
-    borderRadius: half,
-    borderWidth: strokeWidth,
-    borderColor: color,
-  };
 
   return (
     <View style={{ width: size, height: size }}>
-      <View
-        style={[
-          styles.track,
-          { borderRadius: half, borderWidth: strokeWidth, borderColor: trackColor },
-        ]}
-      />
-
-      <View style={[styles.clip, { width: half, height: size, left: half }]}>
-        <Animated.View style={[ring, { left: -half }, rightStyle]} />
-      </View>
-
-      <View style={[styles.clip, { width: half, height: size, left: 0 }]}>
-        <Animated.View style={[ring, { left: 0 }, leftStyle]} />
-      </View>
+      <Svg width={size} height={size}>
+        <Circle
+          cx={half}
+          cy={half}
+          r={radius}
+          fill="none"
+          stroke={trackColor}
+          strokeWidth={strokeWidth}
+        />
+        <AnimatedCircle
+          cx={half}
+          cy={half}
+          r={radius}
+          originX={half}
+          originY={half}
+          rotation={-90}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          animatedProps={animatedProps}
+        />
+      </Svg>
 
       <View style={styles.center} pointerEvents="box-none">
         {children}
@@ -68,14 +66,6 @@ const ProgressRing = ({
 };
 
 const styles = StyleSheet.create({
-  track: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  clip: {
-    position: 'absolute',
-    top: 0,
-    overflow: 'hidden',
-  },
   center: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
