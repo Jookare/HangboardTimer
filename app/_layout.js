@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { Text, TextInput } from 'react-native';
+import { Platform, Text, TextInput } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -37,6 +37,10 @@ const headerOptions = {
   headerShadowVisible: false,
   headerBackTitle: 'Back',
   contentStyle: { backgroundColor: palette.bg },
+  // Android's native-stack overrides the JS <StatusBar>, so it needs the option
+  // to get dark icons on the light chrome. iOS relies on <StatusBar> alone —
+  // passing statusBarStyle there needs an Info.plist opt-in and warns without it.
+  ...(Platform.OS === 'android' ? { statusBarStyle: 'dark' } : null),
 };
 
 export default function RootLayout() {

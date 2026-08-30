@@ -1,18 +1,14 @@
-import { memo } from 'react';
+import { Canvas, Group, Path, Skia } from '@shopify/react-native-skia';
+import { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { palette } from '@/constants/common';
 
 /**
- * Circular progress ring, no SVG / Skia.
- *
- * Each half of the ring is a semicircle View that lives inside a full-size
- * "rotator" (so rotation is about the rotator's own centre = the container
- * centre, no transformOrigin needed) inside a half-width clip. Only a
- * `transform: rotate` changes per frame — a GPU compositor op with no re-raster
- * or re-layout, which stays smooth on Android. Driven by a Reanimated shared
- * value (`progress`, 0..1, 1 = full) on the UI thread. Fills clockwise from 12.
+ * Circular progress ring drawn with Skia (GPU, render-thread). `progress` is a
+ * Reanimated shared value in 0..1 (1 = full ring) bound straight to the stroke's
+ * `end`, so the sweep runs off the JS thread and stays smooth under load.
+ * Starts at 12 o'clock.
  */
 const ProgressRing = ({
   size = 240,
@@ -22,70 +18,38 @@ const ProgressRing = ({
   trackColor = palette.light,
   children,
 }) => {
-  const half = size / 2;
+  const radius = size / 2 - strokeWidth / 2;
 
-  // right half fills while progress 0 -> 0.5, left half while 0.5 -> 1.
-  const rightRotator = useAnimatedStyle(() => {
-    const p = Math.min(0.5, Math.max(0, progress.value));
-    return { transform: [{ rotate: `${(p - 0.5) * 360}deg` }] };
-  });
-  const leftRotator = useAnimatedStyle(() => {
-    const p = Math.min(1, Math.max(0.5, progress.value));
-    return { transform: [{ rotate: `${(p - 1) * 360}deg` }] };
-  });
-
-  const rotator = { position: 'absolute', top: 0, width: size, height: size };
-  const arc = {
-    position: 'absolute',
-    top: 0,
-    width: half,
-    height: size,
-    borderColor: color,
-    borderWidth: strokeWidth,
-  };
+  const path = useMemo(() => {
+    const p = Skia.Path.Make();
+    p.addCircle(size / 2, size / 2, radius);
+    return p;
+  }, [size, radius]);
 
   return (
     <View style={{ width: size, height: size }}>
-      <View
-        style={[
-          styles.track,
-          { borderRadius: half, borderWidth: strokeWidth, borderColor: trackColor },
-        ]}
-      />
-
-      {/* right half */}
-      <View style={[styles.clip, { width: half, height: size, left: half }]}>
-        <Animated.View style={[rotator, { left: -half }, rightRotator]}>
-          <View
-            style={[
-              arc,
-              {
-                left: half,
-                borderLeftWidth: 0,
-                borderTopRightRadius: half,
-                borderBottomRightRadius: half,
-              },
-            ]}
+      <Canvas style={{ width: size, height: size }}>
+        <Group
+          origin={{ x: size / 2, y: size / 2 }}
+          transform={[{ rotate: -Math.PI / 2 }]}
+        >
+          <Path
+            path={path}
+            style="stroke"
+            strokeWidth={strokeWidth}
+            color={trackColor}
           />
-        </Animated.View>
-      </View>
-
-      {/* left half */}
-      <View style={[styles.clip, { width: half, height: size, left: 0 }]}>
-        <Animated.View style={[rotator, { left: 0 }, leftRotator]}>
-          <View
-            style={[
-              arc,
-              {
-                left: 0,
-                borderRightWidth: 0,
-                borderTopLeftRadius: half,
-                borderBottomLeftRadius: half,
-              },
-            ]}
+          <Path
+            path={path}
+            style="stroke"
+            strokeWidth={strokeWidth}
+            strokeCap="round"
+            color={color}
+            start={0}
+            end={progress}
           />
-        </Animated.View>
-      </View>
+        </Group>
+      </Canvas>
 
       <View style={styles.center} pointerEvents="box-none">
         {children}
@@ -95,14 +59,6 @@ const ProgressRing = ({
 };
 
 const styles = StyleSheet.create({
-  track: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  clip: {
-    position: 'absolute',
-    top: 0,
-    overflow: 'hidden',
-  },
   center: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
