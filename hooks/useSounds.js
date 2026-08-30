@@ -18,7 +18,22 @@ export const useSounds = () => {
     const players = {};
     for (const [key, source] of Object.entries(SOURCES)) {
       try {
-        players[key] = createAudioPlayer(source);
+        const player = createAudioPlayer(source);
+        players[key] = player;
+        // Warm the audio pipeline so the *first* real cue isn't swallowed while
+        // the file is still decoding (previously the first rep-rest beep was
+        // silent, then every one after it worked).
+        player.muted = true;
+        player.play();
+        setTimeout(() => {
+          try {
+            player.pause();
+            player.seekTo(0);
+            player.muted = false;
+          } catch {
+            // player already removed
+          }
+        }, 150);
       } catch (e) {
         console.warn(`useSounds: failed to load ${key}`, e);
       }
@@ -42,6 +57,10 @@ export const useSounds = () => {
     if (!player) return;
     try {
       player.seekTo(0);
+    } catch {
+      // not seekable yet — already at 0
+    }
+    try {
       player.play();
     } catch (e) {
       console.warn(`useSounds: failed to play ${type}`, e);

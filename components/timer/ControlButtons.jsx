@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { memo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { palette, shadows } from '@/constants/common';
 
@@ -25,37 +26,45 @@ const ControlButtons = ({
   nextRep,
   previousDisabled,
   nextDisabled,
-}) => (
-  <View style={styles.container}>
-    <SideButton
-      icon="play-back"
-      label="REP"
-      disabled={previousDisabled}
-      onPress={previousRep}
-    />
+}) => {
+  const insets = useSafeAreaInsets();
 
-    <Pressable
-      onPress={toggle}
-      style={({ pressed }) => [styles.playButton, { opacity: pressed ? 0.5 : 1 }]}
+  return (
+    <View
+      style={[
+        styles.container,
+        { height: 120 + insets.bottom, paddingBottom: insets.bottom },
+      ]}
     >
-      <Ionicons name={running ? 'pause' : 'play'} size={38} color={palette.dark} />
-    </Pressable>
+      <SideButton
+        icon="play-back"
+        label="REP"
+        disabled={previousDisabled}
+        onPress={previousRep}
+      />
 
-    <SideButton
-      icon="play-forward"
-      label="REP"
-      disabled={nextDisabled}
-      onPress={nextRep}
-    />
-  </View>
-);
+      <Pressable
+        onPress={toggle}
+        style={({ pressed }) => [styles.playButton, { opacity: pressed ? 0.5 : 1 }]}
+      >
+        <Ionicons name={running ? 'pause' : 'play'} size={38} color={palette.dark} />
+      </Pressable>
+
+      <SideButton
+        icon="play-forward"
+        label="REP"
+        disabled={nextDisabled}
+        onPress={nextRep}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     bottom: 0,
     flexDirection: 'row',
-    height: 120,
     width: '100%',
     justifyContent: 'space-evenly',
     alignItems: 'center',

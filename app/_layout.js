@@ -37,6 +37,9 @@ const headerOptions = {
   headerShadowVisible: false,
   headerBackTitle: 'Back',
   contentStyle: { backgroundColor: palette.bg },
+  // Dark status-bar icons — the app chrome is light. Applies to every screen,
+  // including the tab group.
+  statusBarStyle: 'dark',
 };
 
 export default function RootLayout() {
@@ -50,12 +53,12 @@ export default function RootLayout() {
     })();
   }, []);
 
-  if (!ready) return null;
+  if (!ready) return <StatusBar style="dark" />;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={DefaultTheme}>
-        <SafeAreaProvider>
+        <SafeAreaProvider style={{ flex: 1, backgroundColor: palette.bg_light }}>
           <ToastProvider>
             <StatusBar style="dark" />
             <Stack screenOptions={headerOptions}>

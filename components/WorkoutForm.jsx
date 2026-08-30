@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CounterControl from '@/components/ui/CounterControl';
 import TimeControl from '@/components/ui/TimeControl';
@@ -15,6 +16,7 @@ const MAX_TIME = 3599;
  * can wire up its own Start / Save / Remove actions.
  */
 const WorkoutForm = ({ workout, editableName = false, name, onChangeName, children }) => {
+  const insets = useSafeAreaInsets();
   const sets = useEditableValue(workout.sets, 1, 99);
   const reps = useEditableValue(workout.reps, 1, 99);
   const hangTime = useEditableValue(workout.hangTime, 1, MAX_TIME);
@@ -93,7 +95,9 @@ const WorkoutForm = ({ workout, editableName = false, name, onChangeName, childr
         <TotalWorkoutTime {...values} />
       </ScrollView>
 
-      <View style={styles.footer}>{children(values)}</View>
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+        {children(values)}
+      </View>
     </View>
   );
 };
@@ -144,7 +148,6 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: 20,
     paddingTop: 12,
-    paddingBottom: 20,
     borderTopWidth: 1,
     borderTopColor: palette.light,
     backgroundColor: palette.bg_light,

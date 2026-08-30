@@ -8,7 +8,7 @@ import {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ControlButtons from '@/components/timer/ControlButtons';
 import Gradient from '@/components/timer/Gradient';
@@ -35,6 +35,7 @@ const PHASE_RING_COLOR = {
 export default function TimerScreen() {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   // Keep the screen on during a workout (native only — the web Wake Lock API
   // needs a visible tab and otherwise throws).
@@ -144,7 +145,12 @@ export default function TimerScreen() {
   const nextDisabled = timer.isStopped() && repsLeft === 0 && setsLeft === 0;
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <View
+      style={[
+        styles.container,
+        { paddingBottom: (isComplete ? 24 : 140) + insets.bottom },
+      ]}
+    >
       <Stack.Screen options={{ title: config.name }} />
       <Gradient phase={currentPhase} />
 
@@ -201,7 +207,7 @@ export default function TimerScreen() {
           nextDisabled={nextDisabled}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -212,7 +218,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 20,
-    paddingBottom: 140,
   },
   hangsToGo: {
     fontSize: 28,
