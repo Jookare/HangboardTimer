@@ -1,7 +1,8 @@
+import { usePreventRemove } from '@react-navigation/native';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { Stack, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import {
   cancelAnimation,
   Easing,
@@ -14,6 +15,7 @@ import ControlButtons from '@/components/timer/ControlButtons';
 import Gradient from '@/components/timer/Gradient';
 import PhaseText from '@/components/timer/PhaseText';
 import TimerClock from '@/components/timer/TimerClock';
+import CustomAlert from '@/components/ui/CustomAlert';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 import ProgressRing from '@/components/ui/ProgressRing';
 import { palette } from '@/constants/common';
@@ -84,7 +86,6 @@ export default function TimerScreen() {
 
   const addHistory = history.add;
   const savedRef = useRef(false);
-  const leavingRef = useRef(false);
 
   const logSession = useCallback(
     (partial) => {
@@ -110,42 +111,29 @@ export default function TimerScreen() {
     if (isComplete) logSession(false);
   }, [isComplete, logSession]);
 
-  // Offer to log a partial session when leaving mid-workout.
-  const leaveStateRef = useRef({});
-  leaveStateRef.current = { isComplete, hangsDone };
-  useEffect(() => {
-    const unsub = navigation.addListener('beforeRemove', (e) => {
-      const { isComplete: done, hangsDone: hangs } = leaveStateRef.current;
-      if (done || hangs <= 0 || savedRef.current || leavingRef.current) return;
-      // Alert.alert has no UI on web — don't trap the user there.
-      if (Platform.OS === 'web') return;
-      e.preventDefault();
-      Alert.alert(
-        'Save this session?',
-        `You've completed ${hangs} hang${hangs === 1 ? '' : 's'}.`,
-        [
-          { text: 'Keep going', style: 'cancel' },
-          {
-            text: 'Discard',
-            style: 'destructive',
-            onPress: () => {
-              leavingRef.current = true;
-              navigation.dispatch(e.data.action);
-            },
-          },
-          {
-            text: 'Save',
-            onPress: () => {
-              logSession(true);
-              leavingRef.current = true;
-              navigation.dispatch(e.data.action);
-            },
-          },
-        ],
-      );
-    });
-    return unsub;
-  }, [navigation, logSession]);
+  // Guard leaving mid-workout: hold the pending navigation and confirm first.
+  const [pendingLeave, setPendingLeave] = useState(null);
+  usePreventRemove(
+    hangsDone > 0 && !isComplete && !savedRef.current,
+    ({ data }) => setPendingLeave(data.action),
+  );
+
+  const leaveActions = [
+    { label: 'Keep going', style: 'default', onPress: () => {} },
+    {
+      label: 'Leave without saving',
+      style: 'destructive',
+      onPress: () => navigation.dispatch(pendingLeave),
+    },
+    {
+      label: 'Save & leave',
+      style: 'primary',
+      onPress: () => {
+        logSession(true);
+        navigation.dispatch(pendingLeave);
+      },
+    },
+  ];
 
   const phaseDuration =
     {
@@ -262,6 +250,14 @@ export default function TimerScreen() {
           nextDisabled={nextDisabled}
         />
       )}
+
+      <CustomAlert
+        visible={pendingLeave != null}
+        setVisible={() => setPendingLeave(null)}
+        title="Leave workout?"
+        message={`You've done ${hangsDone} hang${hangsDone === 1 ? '' : 's'} so far.`}
+        actions={leaveActions}
+      />
     </View>
   );
 }
