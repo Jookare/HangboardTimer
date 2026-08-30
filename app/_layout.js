@@ -37,9 +37,6 @@ const headerOptions = {
   headerShadowVisible: false,
   headerBackTitle: 'Back',
   contentStyle: { backgroundColor: palette.bg },
-  // Dark status-bar icons — the app chrome is light. Applies to every screen,
-  // including the tab group.
-  statusBarStyle: 'dark',
 };
 
 export default function RootLayout() {
