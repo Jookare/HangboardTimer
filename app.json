@@ -2,25 +2,32 @@
   "expo": {
     "name": "HangboardTimer",
     "slug": "HangboardTimer",
-    "version": "1.2.2",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "hangboardtimer",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "newArchEnabled": true,
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#EF5452"
       },
       "package": "com.jookare.HangboardTimer",
-      "permissions": ["android.permission.MODIFY_AUDIO_SETTINGS"]
+      "permissions": ["android.permission.MODIFY_AUDIO_SETTINGS"],
+      "edgeToEdgeEnabled": true
+    },
+    "ios": {
+      "supportsTablet": true
     },
     "web": {
+      "bundler": "metro",
+      "output": "single",
       "favicon": "./assets/favicon.png"
     },
     "extra": {
@@ -29,20 +36,19 @@
       }
     },
     "plugins": [
+      "expo-router",
       [
-        "expo-av",
+        "expo-splash-screen",
         {
-          "microphonePermission": false
+          "image": "./assets/splash.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
         }
       ],
       [
-        "expo-build-properties",
+        "expo-audio",
         {
-          "android": {
-            "enableProguardInReleaseBuilds": true,
-            "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}",
-            "allowBackup": false
-          }
+          "microphonePermission": false
         }
       ]
     ],
@@ -51,7 +57,6 @@
     },
     "updates": {
       "url": "https://u.expo.dev/a781e431-2919-47c3-8e69-d3044d131b39"
-    },
-    "ios": {}
+    }
   }
 }
