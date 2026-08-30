@@ -35,6 +35,7 @@ const headerOptions = {
   headerTintColor: palette.dark,
   headerStyle: { backgroundColor: palette.bg_light },
   headerShadowVisible: false,
+  headerBackTitle: 'Back',
   contentStyle: { backgroundColor: palette.bg },
 };
 
@@ -60,14 +61,8 @@ export default function RootLayout() {
             <Stack screenOptions={headerOptions}>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="workout/new" options={{ title: 'New workout' }} />
-              <Stack.Screen
-                name="workout/[id]/index"
-                options={{ title: 'Workout', headerBackTitle: 'Back' }}
-              />
-              <Stack.Screen
-                name="workout/[id]/timer"
-                options={{ title: 'Timer', headerBackTitle: 'Back' }}
-              />
+              <Stack.Screen name="workout/[id]/index" options={{ title: 'Workout' }} />
+              <Stack.Screen name="workout/[id]/timer" options={{ title: 'Timer' }} />
             </Stack>
           </ToastProvider>
         </SafeAreaProvider>
