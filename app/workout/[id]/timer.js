@@ -1,19 +1,28 @@
-import { useKeepAwake } from 'expo-keep-awake';
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useMemo, useRef } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import {
+  cancelAnimation,
+  Easing,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import PrimaryButton from '@/components/ui/PrimaryButton';
-import ProgressRing from '@/components/ui/ProgressRing';
 import ControlButtons from '@/components/timer/ControlButtons';
 import Gradient from '@/components/timer/Gradient';
 import PhaseText from '@/components/timer/PhaseText';
+import TimerClock from '@/components/timer/TimerClock';
+import PrimaryButton from '@/components/ui/PrimaryButton';
+import ProgressRing from '@/components/ui/ProgressRing';
 import { palette } from '@/constants/common';
 import { useHistory } from '@/hooks/useHistory';
 import { useSettings } from '@/hooks/useSettings';
 import { PHASES, useWorkoutTimer } from '@/hooks/useWorkoutTimer';
 import { plannedWorkoutSeconds } from '@/lib/time';
+
+const RING_SIZE = 260;
 
 const PHASE_RING_COLOR = {
   [PHASES.HANG]: palette.phaseHang,
@@ -26,7 +35,14 @@ const PHASE_RING_COLOR = {
 export default function TimerScreen() {
   const params = useLocalSearchParams();
   const router = useRouter();
-  useKeepAwake();
+
+  // Keep the screen on during a workout (native only — the web Wake Lock API
+  // needs a visible tab and otherwise throws).
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    activateKeepAwakeAsync('timer').catch(() => {});
+    return () => deactivateKeepAwake('timer').catch(() => {});
+  }, []);
 
   const { audioEnabled, prep } = useSettings();
   const history = useHistory();
@@ -40,7 +56,6 @@ export default function TimerScreen() {
       repRest: Number(params.repRest) || 0,
       setRest: Number(params.setRest) || 0,
     }),
-    // params object identity is stable for a given navigation
     [params.name, params.sets, params.reps, params.hangTime, params.repRest, params.setRest],
   );
 
@@ -58,10 +73,13 @@ export default function TimerScreen() {
     timer,
   } = useWorkoutTimer({ ...config, prep, audioEnabled });
 
+  const isComplete = currentPhase === PHASES.COMPLETE;
+  const running = timer.isRunning();
+
   const savedRef = useRef(false);
   const addHistory = history.add;
   useEffect(() => {
-    if (currentPhase === PHASES.COMPLETE && !savedRef.current) {
+    if (isComplete && !savedRef.current) {
       savedRef.current = true;
       addHistory({
         workoutName: config.name,
@@ -70,7 +88,7 @@ export default function TimerScreen() {
         plannedSec: plannedWorkoutSeconds(config),
       });
     }
-  }, [currentPhase, config, addHistory]);
+  }, [isComplete, config, addHistory]);
 
   const phaseDuration =
     {
@@ -79,10 +97,46 @@ export default function TimerScreen() {
       [PHASES.REST_AFTER_HANG]: config.repRest,
       [PHASES.REST_BETWEEN_SETS]: config.setRest,
     }[currentPhase] ?? config.hangTime;
+  const phaseMs = phaseDuration * 1000;
 
-  const fraction = phaseDuration > 0 ? Math.min(1, time / (phaseDuration * 10)) : 0;
-  const isComplete = currentPhase === PHASES.COMPLETE;
-  const running = timer.isRunning();
+  // Drive the ring with one Reanimated shared value. The JS timer only touches
+  // it at phase boundaries / pause / resume; the sweep runs on the UI thread, so
+  // the ring stays smooth with no React re-render per frame. The digits update
+  // separately at their own ~10Hz.
+  const ringProgress = useSharedValue(1);
+  const timeRef = useRef(time);
+  timeRef.current = time;
+
+  useEffect(() => {
+    cancelAnimation(ringProgress);
+
+    if (isComplete || phaseMs === 0) {
+      ringProgress.value = 0;
+      return;
+    }
+
+    const startFrac = Math.min(1, Math.max(0, (timeRef.current * 100) / phaseMs));
+    ringProgress.value = startFrac;
+
+    if (running && startFrac > 0) {
+      ringProgress.value = withTiming(0, {
+        duration: startFrac * phaseMs,
+        easing: Easing.linear,
+      });
+    }
+
+    return () => cancelAnimation(ringProgress);
+  }, [currentPhase, running, isComplete, phaseMs, ringProgress]);
+
+  // Stable handler identities so <ControlButtons> can bail out of the 10Hz
+  // re-render and only update when the running / disabled flags change.
+  const handlerRef = useRef({ toggle, previousRep, nextRep });
+  handlerRef.current = { toggle, previousRep, nextRep };
+  const onToggle = useCallback(() => handlerRef.current.toggle(), []);
+  const onPrevious = useCallback(() => handlerRef.current.previousRep(), []);
+  const onNext = useCallback(() => handlerRef.current.nextRep(), []);
+
+  const ringColor = PHASE_RING_COLOR[currentPhase] ?? palette.phaseHang;
   const hangsToGo = Math.max(0, (setsLeft - 1) * config.reps + repsLeft);
 
   const previousDisabled =
@@ -110,17 +164,17 @@ export default function TimerScreen() {
         </View>
       ) : (
         <>
-          <ProgressRing
-            size={260}
-            strokeWidth={16}
-            progress={fraction}
-            color={PHASE_RING_COLOR[currentPhase] ?? palette.phaseHang}
-          >
-            <Text style={styles.timerText}>
-              {`${mins}:${secs}`}
-              <Text style={styles.tenths}>{tenths}</Text>
-            </Text>
-          </ProgressRing>
+          <View style={styles.ringWrap}>
+            <ProgressRing
+              size={RING_SIZE}
+              strokeWidth={16}
+              progress={ringProgress}
+              color={ringColor}
+            />
+            <View style={styles.ringCenter} pointerEvents="none">
+              <TimerClock mins={mins} secs={secs} tenths={tenths} />
+            </View>
+          </View>
 
           <PhaseText phase={currentPhase} paused={timer.isPaused()} />
 
@@ -140,9 +194,9 @@ export default function TimerScreen() {
       {!isComplete && (
         <ControlButtons
           running={running}
-          toggle={toggle}
-          previousRep={previousRep}
-          nextRep={nextRep}
+          toggle={onToggle}
+          previousRep={onPrevious}
+          nextRep={onNext}
           previousDisabled={previousDisabled}
           nextDisabled={nextDisabled}
         />
@@ -166,14 +220,14 @@ const styles = StyleSheet.create({
     color: palette.dark,
     textAlign: 'center',
   },
-  timerText: {
-    fontSize: 56,
-    fontWeight: 'bold',
-    color: palette.dark,
+  ringWrap: {
+    width: RING_SIZE,
+    height: RING_SIZE,
   },
-  tenths: {
-    fontSize: 34,
-    color: 'rgba(0,0,0,0.4)',
+  ringCenter: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   statusRow: {
     flexDirection: 'row',

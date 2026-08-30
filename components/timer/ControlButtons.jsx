@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { memo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { palette, shadows } from '@/constants/common';
@@ -92,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ControlButtons;
+export default memo(ControlButtons);

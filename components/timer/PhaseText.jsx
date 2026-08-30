@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { StyleSheet, Text } from 'react-native';
 
 import { palette } from '@/constants/common';
@@ -8,7 +9,7 @@ const PHASE_TEXT = {
   [PHASES.COUNTDOWN]: 'GET READY!',
   [PHASES.COMPLETE]: 'WORKOUT DONE!',
   [PHASES.REST_AFTER_HANG]: 'REST',
-  [PHASES.REST_BETWEEN_SETS]: 'REST BETWEEN SETS',
+  [PHASES.REST_BETWEEN_SETS]: 'REST',
 };
 
 const PhaseText = ({ phase, paused }) => (
@@ -26,4 +27,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PhaseText;
+export default memo(PhaseText);

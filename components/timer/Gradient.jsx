@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { memo } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { PHASES } from '@/hooks/useWorkoutTimer';
@@ -20,9 +21,9 @@ const styles = StyleSheet.create({
   gradient: {
     position: 'absolute',
     top: 0,
-    height: '70%',
+    height: '80%',
     width: '100%',
   },
 });
 
-export default Gradient;
+export default memo(Gradient);
