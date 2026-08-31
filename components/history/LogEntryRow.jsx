@@ -9,12 +9,13 @@ import Animated, {
 
 import { palette, shadows } from '@/constants/common';
 
-const ACTION_WIDTH = 96;
+const ACTION_WIDTH = 84;
+const META_WIDTH = 78; // the time + chevron cluster
 
 /**
- * A training-log row. Tapping it slides a Remove button in from the right (the
- * row itself stays put); tapping again hides it. Only one row is open at a time
- * (`isOpen` is driven by the parent).
+ * A training-log row. Tapping it slides the time / chevron left and a Remove
+ * button in from the right — the row's name/meta stays put. Tapping again (or
+ * scrolling) hides it; one row open at a time (`isOpen` driven by the parent).
  */
 const LogEntryRow = ({ entry, meta, timeText, isOpen, onOpenChange, onDelete }) => {
   const progress = useSharedValue(0);
@@ -23,8 +24,11 @@ const LogEntryRow = ({ entry, meta, timeText, isOpen, onOpenChange, onDelete }) 
     progress.value = withTiming(isOpen ? 1 : 0, { duration: 180 });
   }, [isOpen, progress]);
 
-  const actionStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: (1 - progress.value) * ACTION_WIDTH }],
+  const mainStyle = useAnimatedStyle(() => ({
+    marginRight: META_WIDTH + progress.value * ACTION_WIDTH,
+  }));
+  const trayStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: -progress.value * ACTION_WIDTH }],
   }));
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${progress.value * 180}deg` }],
@@ -33,11 +37,8 @@ const LogEntryRow = ({ entry, meta, timeText, isOpen, onOpenChange, onDelete }) 
   return (
     <View style={styles.container}>
       <View style={styles.clip}>
-        <Pressable
-          style={styles.row}
-          onPress={() => onOpenChange(entry.id, !isOpen)}
-        >
-          <View style={styles.main}>
+        <Pressable style={styles.row} onPress={() => onOpenChange(entry.id, !isOpen)}>
+          <Animated.View style={[styles.main, mainStyle]}>
             <View style={styles.nameRow}>
               <Text style={styles.name} numberOfLines={1}>
                 {entry.workoutName}
@@ -45,30 +46,33 @@ const LogEntryRow = ({ entry, meta, timeText, isOpen, onOpenChange, onDelete }) 
               {entry.partial && <Text style={styles.tag}>PARTIAL</Text>}
             </View>
             <Text style={styles.meta}>{meta}</Text>
-          </View>
+          </Animated.View>
 
-          <Text style={styles.time}>{timeText}</Text>
+          <Animated.View style={[styles.tray, trayStyle]}>
+            <View style={styles.metaCluster}>
+              <Text style={styles.time} numberOfLines={1}>
+                {timeText}
+              </Text>
+              <Animated.View style={chevronStyle}>
+                <Ionicons name="chevron-back" size={18} color={palette.inactive} />
+              </Animated.View>
+            </View>
 
-          <Animated.View style={chevronStyle}>
-            <Ionicons name="chevron-back" size={18} color={palette.inactive} />
+            <Pressable
+              style={[
+                styles.removeButton,
+                { pointerEvents: isOpen ? 'auto' : 'none' },
+              ]}
+              onPress={() => {
+                onOpenChange(entry.id, false);
+                onDelete();
+              }}
+            >
+              <Ionicons name="trash" size={18} color={palette.white} />
+              <Text style={styles.removeText}>Remove</Text>
+            </Pressable>
           </Animated.View>
         </Pressable>
-
-        <Animated.View
-          style={[styles.action, actionStyle]}
-          pointerEvents={isOpen ? 'auto' : 'none'}
-        >
-          <Pressable
-            style={styles.removeButton}
-            onPress={() => {
-              onOpenChange(entry.id, false);
-              onDelete();
-            }}
-          >
-            <Ionicons name="trash" size={18} color={palette.white} />
-            <Text style={styles.removeText}>Remove</Text>
-          </Pressable>
-        </Animated.View>
       </View>
     </View>
   );
@@ -88,8 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: palette.white,
     paddingVertical: 12,
-    paddingHorizontal: 14,
-    gap: 8,
+    paddingLeft: 14,
   },
   main: {
     flex: 1,
@@ -116,19 +119,29 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: palette.subtitle,
   },
+  tray: {
+    position: 'absolute',
+    right: -ACTION_WIDTH,
+    top: 0,
+    bottom: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  metaCluster: {
+    width: META_WIDTH,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
+    paddingRight: 14,
+  },
   time: {
     fontSize: 13,
     color: palette.inactive,
   },
-  action: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    bottom: 0,
-    width: ACTION_WIDTH,
-  },
   removeButton: {
-    flex: 1,
+    width: ACTION_WIDTH,
+    alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
