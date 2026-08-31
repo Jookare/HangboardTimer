@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { SectionList, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import SwipeableLogRow from '@/components/history/SwipeableLogRow';
+import LogEntryRow from '@/components/history/LogEntryRow';
 import CustomAlert from '@/components/ui/CustomAlert';
 import { useToast } from '@/components/ui/Toast';
 import { palette } from '@/constants/common';
@@ -78,7 +78,7 @@ export default function HistoryScreen() {
             <Text style={styles.sectionHeader}>{section.title}</Text>
           )}
           renderItem={({ item }) => (
-            <SwipeableLogRow
+            <LogEntryRow
               entry={item}
               meta={metaLabel(item)}
               timeText={timeLabel(item.completedAt)}
