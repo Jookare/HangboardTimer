@@ -26,13 +26,13 @@ export const palette = {
 
   // Timer phase colors
   phaseHang: '#4ade80',
-  phasePrep: '#fcd34d',
+  phasePrep: '#fdc700',
   phaseRepRest: '#f87171',
   phaseSetRest: '#f87171',
   phaseComplete: '#38bdf8',
 
   // Switch colors
-  switchOn: '#17b26a',
+  switchOn: '#00c950',
   switchOff: '#d0d5dd',
 };
 

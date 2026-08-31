@@ -20,7 +20,7 @@ const Gradient = ({ phase }) => {
   return (
     <LinearGradient
       pointerEvents="none"
-      colors={[`rgba(${rgb}, 0.55)`, `rgba(${rgb}, 0)`]}
+      colors={[`rgba(${rgb}, 0.65)`, `rgba(${rgb}, 0)`]}
       style={styles.gradient}
     />
   );
