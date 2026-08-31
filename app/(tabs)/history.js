@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { SectionList, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import EditLogModal from '@/components/history/EditLogModal';
 import SwipeableLogRow from '@/components/history/SwipeableLogRow';
 import CustomAlert from '@/components/ui/CustomAlert';
 import { useToast } from '@/components/ui/Toast';
@@ -36,11 +35,10 @@ const metaLabel = (item) => {
 };
 
 export default function HistoryScreen() {
-  const { history, update, remove } = useHistory();
+  const { history, remove } = useHistory();
   const toast = useToast();
 
   const [openId, setOpenId] = useState(null);
-  const [editEntry, setEditEntry] = useState(null);
   const [pendingDelete, setPendingDelete] = useState(null);
 
   const onOpenChange = (id, open) => {
@@ -86,21 +84,11 @@ export default function HistoryScreen() {
               timeText={timeLabel(item.completedAt)}
               isOpen={openId === item.id}
               onOpenChange={onOpenChange}
-              onEdit={() => setEditEntry(item)}
               onDelete={() => setPendingDelete(item)}
             />
           )}
         />
       )}
-
-      <EditLogModal
-        entry={editEntry}
-        onClose={() => setEditEntry(null)}
-        onSave={(patch) => {
-          if (editEntry) update(editEntry.id, patch);
-          toast.show('Entry updated');
-        }}
-      />
 
       <CustomAlert
         visible={pendingDelete != null}

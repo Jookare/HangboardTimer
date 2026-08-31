@@ -5,22 +5,14 @@ import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeabl
 
 import { palette, shadows } from '@/constants/common';
 
-const ACTION_WIDTH = 76;
+const ACTION_WIDTH = 96;
 
 /**
- * A training-log row that reveals Edit / Remove actions — either by swiping it
- * left or by tapping the chevron on its left edge. Only one row is open at a
- * time (`isOpen` is driven by the parent).
+ * A training-log row that reveals a Remove action — either by swiping it left
+ * or by tapping the chevron on its left edge. Only one row is open at a time
+ * (`isOpen` is driven by the parent).
  */
-const SwipeableLogRow = ({
-  entry,
-  meta,
-  timeText,
-  isOpen,
-  onOpenChange,
-  onEdit,
-  onDelete,
-}) => {
+const SwipeableLogRow = ({ entry, meta, timeText, isOpen, onOpenChange, onDelete }) => {
   const swipeRef = useRef(null);
 
   useEffect(() => {
@@ -28,28 +20,16 @@ const SwipeableLogRow = ({
   }, [isOpen]);
 
   const renderRightActions = () => (
-    <View style={styles.actions}>
-      <TouchableOpacity
-        style={[styles.action, styles.editAction]}
-        onPress={() => {
-          swipeRef.current?.close();
-          onEdit();
-        }}
-      >
-        <Ionicons name="pencil" size={17} color={palette.white} />
-        <Text style={styles.actionText}>Edit</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.action, styles.deleteAction]}
-        onPress={() => {
-          swipeRef.current?.close();
-          onDelete();
-        }}
-      >
-        <Ionicons name="trash" size={17} color={palette.white} />
-        <Text style={styles.actionText}>Remove</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      style={styles.deleteAction}
+      onPress={() => {
+        swipeRef.current?.close();
+        onDelete();
+      }}
+    >
+      <Ionicons name="trash" size={18} color={palette.white} />
+      <Text style={styles.actionText}>Remove</Text>
+    </TouchableOpacity>
   );
 
   return (
@@ -144,21 +124,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: palette.inactive,
   },
-  actions: {
-    flexDirection: 'row',
-    height: '100%',
-  },
-  action: {
+  deleteAction: {
     width: ACTION_WIDTH,
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
-  },
-  editAction: {
-    backgroundColor: palette.blue,
-  },
-  deleteAction: {
     backgroundColor: palette.red,
     borderTopRightRadius: 12,
     borderBottomRightRadius: 12,
