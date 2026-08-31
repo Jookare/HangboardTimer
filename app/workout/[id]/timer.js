@@ -97,6 +97,10 @@ export default function TimerScreen() {
         workoutName: config.name,
         reps: config.reps,
         sets: partial ? Math.floor(hangs / config.reps) : config.sets,
+        plannedSets: config.sets,
+        hangTime: config.hangTime,
+        repRest: config.repRest,
+        setRest: config.setRest,
         hangs,
         plannedSec: partial
           ? hangsPlannedSeconds(config, hangs)

@@ -26,6 +26,14 @@ export const useHistory = () => {
     [set],
   );
 
+  const update = useCallback(
+    (id, patch) =>
+      set((prev) =>
+        (prev || []).map((e) => (e.id === id ? { ...e, ...patch, id } : e)),
+      ),
+    [set],
+  );
+
   const remove = useCallback(
     (id) => set((prev) => (prev || []).filter((e) => e.id !== id)),
     [set],
@@ -33,5 +41,5 @@ export const useHistory = () => {
 
   const clearAll = useCallback(() => set([]), [set]);
 
-  return { history: list, isHydrated, add, remove, clearAll };
+  return { history: list, isHydrated, add, update, remove, clearAll };
 };

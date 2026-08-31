@@ -1,11 +1,12 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
-import { SectionList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SectionList, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import EditLogModal from '@/components/history/EditLogModal';
+import SwipeableLogRow from '@/components/history/SwipeableLogRow';
 import CustomAlert from '@/components/ui/CustomAlert';
 import { useToast } from '@/components/ui/Toast';
-import { palette, shadows } from '@/constants/common';
+import { palette } from '@/constants/common';
 import { useHistory } from '@/hooks/useHistory';
 import { formatDuration } from '@/lib/time';
 
@@ -35,9 +36,16 @@ const metaLabel = (item) => {
 };
 
 export default function HistoryScreen() {
-  const { history, remove } = useHistory();
+  const { history, update, remove } = useHistory();
   const toast = useToast();
+
+  const [openId, setOpenId] = useState(null);
+  const [editEntry, setEditEntry] = useState(null);
   const [pendingDelete, setPendingDelete] = useState(null);
+
+  const onOpenChange = (id, open) => {
+    setOpenId((cur) => (open ? id : cur === id ? null : cur));
+  };
 
   const sections = useMemo(() => {
     const groups = [];
@@ -67,32 +75,32 @@ export default function HistoryScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           stickySectionHeadersEnabled={false}
+          onScrollBeginDrag={() => setOpenId(null)}
           renderSectionHeader={({ section }) => (
             <Text style={styles.sectionHeader}>{section.title}</Text>
           )}
           renderItem={({ item }) => (
-            <View style={styles.row}>
-              <View style={styles.rowMain}>
-                <View style={styles.nameRow}>
-                  <Text style={styles.workoutName} numberOfLines={1}>
-                    {item.workoutName}
-                  </Text>
-                  {item.partial && <Text style={styles.partialTag}>PARTIAL</Text>}
-                </View>
-                <Text style={styles.meta}>{metaLabel(item)}</Text>
-              </View>
-              <Text style={styles.time}>{timeLabel(item.completedAt)}</Text>
-              <TouchableOpacity
-                hitSlop={8}
-                style={styles.deleteButton}
-                onPress={() => setPendingDelete(item)}
-              >
-                <Ionicons name="trash-outline" size={18} color={palette.inactive} />
-              </TouchableOpacity>
-            </View>
+            <SwipeableLogRow
+              entry={item}
+              meta={metaLabel(item)}
+              timeText={timeLabel(item.completedAt)}
+              isOpen={openId === item.id}
+              onOpenChange={onOpenChange}
+              onEdit={() => setEditEntry(item)}
+              onDelete={() => setPendingDelete(item)}
+            />
           )}
         />
       )}
+
+      <EditLogModal
+        entry={editEntry}
+        onClose={() => setEditEntry(null)}
+        onSave={(patch) => {
+          if (editEntry) update(editEntry.id, patch);
+          toast.show('Entry updated');
+        }}
+      />
 
       <CustomAlert
         visible={pendingDelete != null}
@@ -137,47 +145,6 @@ const styles = StyleSheet.create({
     color: palette.subtitle,
     marginTop: 16,
     marginBottom: 6,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: palette.white,
-    borderRadius: 12,
-    padding: 14,
-    gap: 10,
-    ...shadows.small,
-  },
-  rowMain: {
-    flex: 1,
-    gap: 2,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  workoutName: {
-    flexShrink: 1,
-    fontSize: 16,
-    fontWeight: '600',
-    color: palette.dark,
-  },
-  partialTag: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: palette.yellow,
-    letterSpacing: 0.5,
-  },
-  meta: {
-    fontSize: 13,
-    color: palette.subtitle,
-  },
-  time: {
-    fontSize: 13,
-    color: palette.inactive,
-  },
-  deleteButton: {
-    padding: 4,
   },
   empty: {
     color: palette.subtitle,
