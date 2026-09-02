@@ -70,9 +70,15 @@ const TimeControl = ({ label, value, onIncrease, onDecrease, onSubmit }) => {
         hideHours
         initialValue={toPickerValue(value)}
         pickerFeedback={pickerFeedback}
-        minuteLabel=":"
-        secondLabel=""
-        styles={{ theme: 'light' }}
+        minuteLabel="min"
+        secondLabel="sec"
+        styles={{
+          theme: 'light',
+          contentContainer: {
+            minWidth: 300,
+            paddingHorizontal: 24,
+          },
+        }}
       />
     </View>
   );

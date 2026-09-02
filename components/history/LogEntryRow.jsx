@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -37,7 +37,7 @@ const LogEntryRow = ({ entry, meta, timeText, isOpen, onOpenChange, onDelete }) 
   return (
     <View style={styles.container}>
       <View style={styles.clip}>
-        <Pressable style={styles.row} onPress={() => onOpenChange(entry.id, !isOpen)}>
+        <TouchableOpacity activeOpacity={0.7} style={styles.row} onPress={() => onOpenChange(entry.id, !isOpen)}>
           <Animated.View style={[styles.main, mainStyle]}>
             <View style={styles.nameRow}>
               <Text style={styles.name} numberOfLines={1}>
@@ -58,7 +58,8 @@ const LogEntryRow = ({ entry, meta, timeText, isOpen, onOpenChange, onDelete }) 
               </Animated.View>
             </View>
 
-            <Pressable
+            <TouchableOpacity
+              activeOpacity={0.7}
               style={[
                 styles.removeButton,
                 { pointerEvents: isOpen ? 'auto' : 'none' },
@@ -70,9 +71,9 @@ const LogEntryRow = ({ entry, meta, timeText, isOpen, onOpenChange, onDelete }) 
             >
               <Ionicons name="trash" size={18} color={palette.white} />
               <Text style={styles.removeText}>Remove</Text>
-            </Pressable>
+            </TouchableOpacity>
           </Animated.View>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );

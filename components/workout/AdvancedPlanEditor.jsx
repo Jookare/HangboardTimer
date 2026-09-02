@@ -19,7 +19,7 @@ const AdvancedPlanEditor = ({ plan, onChange }) => {
 
   const duplicateSet = (si) => {
     const copy = cloneSet(plan[si]);
-    onChange([...plan.slice(0, si + 1), copy, ...plan.slice(si + 1)]);
+    onChange([...plan.slice(0, si + 1),  ...plan.slice(si + 1), copy]);
   };
 
   const deleteSet = (si) =>

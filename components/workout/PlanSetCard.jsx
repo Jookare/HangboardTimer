@@ -52,7 +52,7 @@ const PlanSetCard = ({ set, index, isLast, canDelete, onChange, onDuplicate, onD
           <View style={styles.timeCol}>
             <MiniTimeField
               value={rep.hang}
-              title={`Set ${index + 1} · rep ${ri + 1} hang`}
+              title={`Hang Time`}
               onChange={(v) => updateRep(ri, { hang: clampTime(v) })}
             />
           </View>
@@ -61,7 +61,7 @@ const PlanSetCard = ({ set, index, isLast, canDelete, onChange, onDuplicate, onD
               <MiniTimeField
                 value={rep.rest}
                 tint={palette.subtitle}
-                title={`Set ${index + 1} · rest after rep ${ri + 1}`}
+                title={`Rest Time`}
                 onChange={(v) => updateRep(ri, { rest: clampTime(v) })}
               />
             ) : (

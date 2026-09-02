@@ -20,7 +20,7 @@ const MiniTimeField = ({ value, onChange, title = 'Time', tint = palette.dark })
   const [open, setOpen] = useState(false);
 
   const feedback = useCallback(() => {
-    Haptics.selectionAsync().catch(() => {});
+    Haptics.selectionAsync().catch(() => { });
   }, []);
 
   return (
@@ -47,9 +47,15 @@ const MiniTimeField = ({ value, onChange, title = 'Time', tint = palette.dark })
         hideHours
         initialValue={toPicker(value)}
         pickerFeedback={feedback}
-        minuteLabel=":"
-        secondLabel=""
-        styles={{ theme: 'light' }}
+        minuteLabel="min"
+        secondLabel="sec"
+        styles={{
+          theme: 'light',
+          contentContainer: {
+            minWidth: 300,
+            paddingHorizontal: 24,
+          },
+        }}
       />
     </>
   );
