@@ -4,7 +4,7 @@ import { useState } from 'react';
 import WorkoutForm from '@/components/WorkoutForm';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 import { useToast } from '@/components/ui/Toast';
-import { EMPTY_WORKOUT } from '@/constants/workouts';
+import { EMPTY_WORKOUT, workoutFields } from '@/constants/workouts';
 import { useWorkouts } from '@/hooks/useWorkouts';
 
 export default function NewWorkoutScreen() {
@@ -17,28 +17,21 @@ export default function NewWorkoutScreen() {
     add({
       ...EMPTY_WORKOUT,
       name: values.name?.trim() || 'New workout',
-      sets: values.sets,
-      reps: values.reps,
-      hangTime: values.hangTime,
-      repRest: values.repRest,
-      setRest: values.setRest,
+      ...workoutFields(values),
     });
     toast.show('Workout created');
     router.dismissTo('/');
   };
 
   const startNow = (values) => {
+    const workout = {
+      ...EMPTY_WORKOUT,
+      name: values.name?.trim() || 'Workout',
+      ...workoutFields(values),
+    };
     router.push({
       pathname: '/workout/[id]/timer',
-      params: {
-        id: 'preview',
-        name: values.name?.trim() || 'Workout',
-        sets: values.sets,
-        reps: values.reps,
-        hangTime: values.hangTime,
-        repRest: values.repRest,
-        setRest: values.setRest,
-      },
+      params: { id: 'preview', w: JSON.stringify(workout) },
     });
   };
 

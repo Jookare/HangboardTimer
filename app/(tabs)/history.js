@@ -25,11 +25,15 @@ const timeLabel = (iso) => {
   return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 };
 
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
 const metaLabel = (item) => {
   const duration = formatDuration(item.plannedSec || 0);
   if (item.partial) {
-    const hangs = item.hangs ?? 0;
-    return `${hangs} hang${hangs === 1 ? '' : 's'} · ${duration}`;
+    return `${plural(item.hangs ?? 0, 'hang')} · ${duration}`;
+  }
+  if (item.mode === 'advanced' || item.reps == null) {
+    return `${plural(item.sets ?? 0, 'set')} · ${plural(item.hangs ?? 0, 'hang')} · ${duration}`;
   }
   return `${item.sets} × ${item.reps} · ${duration}`;
 };

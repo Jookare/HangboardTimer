@@ -1,11 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AppState } from 'react-native';
 import { useTimer } from 'react-use-precision-timer';
 
+import {
+  buildStages,
+  elapsedSec,
+  hangIndices,
+  hangsBefore,
+  STAGE,
+  totalHangs as countHangs,
+} from '@/lib/stages';
 import { getRemaining } from '@/lib/time';
 
 import { useSounds } from './useSounds';
 
+// Kept for the screen / PhaseText / Gradient, which key on these member names.
 export const PHASES = {
   COUNTDOWN: 'countdown',
   HANG: 'hang',
@@ -14,57 +23,48 @@ export const PHASES = {
   COMPLETE: 'complete',
 };
 
-// The cue each phase fires when it ends — used to pre-warm the player.
-const PHASE_END_SOUND = {
-  [PHASES.COUNTDOWN]: 'start',
-  [PHASES.HANG]: 'end',
-  [PHASES.REST_AFTER_HANG]: 'start',
-  [PHASES.REST_BETWEEN_SETS]: 'ready',
+const KIND_TO_PHASE = {
+  [STAGE.PREP]: PHASES.COUNTDOWN,
+  [STAGE.HANG]: PHASES.HANG,
+  [STAGE.REP_REST]: PHASES.REST_AFTER_HANG,
+  [STAGE.SET_REST]: PHASES.REST_BETWEEN_SETS,
 };
 
+const endCueFor = (kind) => (kind === STAGE.HANG ? 'end' : 'start');
+
 /**
- * Ported (near-verbatim) from the pre-2.0 TimerScreen hook. The phase state
- * machine and prev/next-rep logic are unchanged; only the inputs differ:
- * `prep` and `audioEnabled` are passed in instead of read from AsyncStorage.
+ * Walks a compiled stage list ({@link buildStages}). Every workout — basic or
+ * advanced — runs through here. Keeps the pre-2.0 sound cues, background
+ * pause/resume and prev/next-rep behaviour; the phase state machine it replaced
+ * is gone.
  *
- * All durations are in whole seconds. Internally `time` is tenths of a second.
+ * `time` is tenths of a second remaining in the current stage.
  */
-export const useWorkoutTimer = ({
-  hangTime,
-  repRest,
-  setRest,
-  sets,
-  reps,
-  prep = 5,
-  audioEnabled = false,
-}) => {
-  const restAfterHang = repRest;
-  const restAfterSet = setRest;
-  const preparation = prep;
+export const useWorkoutTimer = ({ workout, prep = 0, audioEnabled = false }) => {
   const playSoundEnabled = audioEnabled;
 
-  const [currentPhase, setCurrentPhase] = useState(PHASES.HANG);
-  const [setsLeft, setSetsLeft] = useState(sets);
-  const [repsLeft, setRepsLeft] = useState(reps);
+  const { stages, workSec } = useMemo(
+    () => buildStages(workout, prep),
+    [workout, prep],
+  );
+  const hangIdx = useMemo(() => hangIndices(stages), [stages]);
+  const totalHangs = useMemo(() => countHangs(stages), [stages]);
 
-  const [time, setTime] = useState(hangTime * 10); // tenths of a second
+  const [index, setIndex] = useState(0);
+  const [time, setTime] = useState(() => (stages[0]?.duration ?? 0) * 10);
   const [appState, setAppState] = useState(AppState.currentState);
   const [timerOn, setTimerOn] = useState(false);
+
+  const isComplete = index >= stages.length;
+  const currentStage = isComplete ? null : stages[index];
+  const currentPhase = isComplete
+    ? PHASES.COMPLETE
+    : KIND_TO_PHASE[currentStage.kind];
 
   const { mins, secs, tenths } = getRemaining(time);
   const { playSound, prewarm } = useSounds();
 
-  // Pre-warm the cue a phase will fire — once when the phase begins (covers
-  // short phases) and again with ~3s to go (a fresh warm-up for long phases).
-  useEffect(() => {
-    if (!playSoundEnabled) return;
-    const cue = PHASE_END_SOUND[currentPhase];
-    if (cue) prewarm(cue);
-  }, [currentPhase, playSoundEnabled, timerOn, prewarm]);
-
-  const handleSetTime = (value) => {
-    setTime(value * 10);
-  };
+  const handleSetTime = (value) => setTime(Math.max(0, value) * 10);
 
   const handleTimerCallback = useCallback(() => {
     setTime((prev) => Math.max(prev - 1, 0));
@@ -72,125 +72,46 @@ export const useWorkoutTimer = ({
 
   const timer = useTimer({ delay: 100 }, handleTimerCallback);
 
+  // Pre-warm the cue this stage will fire.
   useEffect(() => {
-    handlePhaseTransition();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [time]);
+    if (!playSoundEnabled || isComplete) return;
+    prewarm(endCueFor(currentStage.kind));
+  }, [index, playSoundEnabled, timerOn, isComplete, currentStage, prewarm]);
 
-  const handlePhaseTransition = () => {
+  const advance = () => {
+    const next = index + 1;
+    if (next >= stages.length) {
+      timer.stop();
+      setIndex(stages.length);
+      setTime(0);
+    } else {
+      setIndex(next);
+      handleSetTime(stages[next].duration);
+    }
+  };
+
+  useEffect(() => {
+    if (isComplete || !currentStage) return;
+
     if (playSoundEnabled) {
-      // ~3s to go: refresh the warm-up for this phase's end cue.
-      if (time === 30) {
-        const cue = PHASE_END_SOUND[currentPhase];
-        if (cue) prewarm(cue);
-      }
-      if (currentPhase === PHASES.COUNTDOWN) {
-        if (time === 30 || time === 20 || time === 10) {
-          playSound('ready');
-        }
-      }
-      if (
-        currentPhase === PHASES.REST_BETWEEN_SETS &&
-        time === 0 &&
-        preparation > 3
-      ) {
+      const countdownKind =
+        currentStage.kind === STAGE.PREP || currentStage.kind === STAGE.SET_REST;
+      if (countdownKind && (time === 30 || time === 20 || time === 10)) {
         playSound('ready');
       }
+      if (time === 30) prewarm(endCueFor(currentStage.kind));
     }
 
     if (time <= 0) {
       if (playSoundEnabled) {
-        if (
-          currentPhase === PHASES.COUNTDOWN ||
-          currentPhase === PHASES.REST_AFTER_HANG
-        ) {
-          playSound('start');
-        } else if (currentPhase === PHASES.HANG) {
-          playSound('end');
-        }
+        playSound(currentStage.kind === STAGE.HANG ? 'end' : 'start');
       }
-      transitionToNextPhase();
+      advance();
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [time]);
 
-  const transitionToNextPhase = () => {
-    const transitionToPhase = (phase, nextTime = null) => {
-      setCurrentPhase(phase);
-      handleSetTime(nextTime);
-    };
-
-    const completeWorkout = () => {
-      setSetsLeft(0);
-      setRepsLeft(0);
-      timer.stop();
-      setCurrentPhase(PHASES.COMPLETE);
-    };
-
-    const handleCountdownPhase = () => {
-      if (repsLeft === 0 && setsLeft === 0) {
-        completeWorkout();
-      } else {
-        transitionToPhase(PHASES.HANG, hangTime);
-      }
-    };
-
-    const handleHangPhase = () => {
-      setRepsLeft(repsLeft - 1);
-      if (repsLeft > 1) {
-        transitionToPhase(
-          restAfterHang === 0 ? PHASES.HANG : PHASES.REST_AFTER_HANG,
-          restAfterHang || hangTime,
-        );
-      } else if (setsLeft > 1) {
-        setSetsLeft(setsLeft - 1);
-        setRepsLeft(reps);
-
-        if (restAfterSet === 0) {
-          transitionToPhase(
-            preparation > 0 ? PHASES.COUNTDOWN : PHASES.HANG,
-            preparation || hangTime,
-          );
-        } else {
-          transitionToPhase(PHASES.REST_BETWEEN_SETS, restAfterSet);
-        }
-      } else {
-        completeWorkout();
-      }
-    };
-
-    const handleRestAfterHangPhase = () => {
-      transitionToPhase(PHASES.HANG, hangTime);
-    };
-
-    const handleRestBetweenSetsPhase = () => {
-      transitionToPhase(
-        PHASES.COUNTDOWN,
-        preparation > 0 ? preparation : hangTime,
-      );
-    };
-
-    switch (currentPhase) {
-      case PHASES.COUNTDOWN:
-        handleCountdownPhase();
-        break;
-      case PHASES.HANG:
-        handleHangPhase();
-        break;
-      case PHASES.REST_AFTER_HANG:
-        handleRestAfterHangPhase();
-        break;
-      case PHASES.REST_BETWEEN_SETS:
-        handleRestBetweenSetsPhase();
-        break;
-      case PHASES.COMPLETE:
-        handleSetTime(null);
-        break;
-      default:
-        console.error(`Unexpected phase: ${currentPhase}`);
-        break;
-    }
-  };
-
+  // Background pause / resume — carried over verbatim.
   const [timerFinishTime, setTimerFinishTime] = useState(0);
 
   useEffect(() => {
@@ -206,10 +127,7 @@ export const useWorkoutTimer = ({
   const onAppStateChange = useCallback(
     (nextAppState) => {
       if (timerOn) {
-        if (
-          appState === 'active' &&
-          nextAppState.match(/inactive|background/)
-        ) {
+        if (appState === 'active' && nextAppState.match(/inactive|background/)) {
           timer.pause();
         } else if (
           appState.match(/inactive|background/) &&
@@ -229,86 +147,122 @@ export const useWorkoutTimer = ({
   }, [onAppStateChange]);
 
   const toggle = () => {
-    if (currentPhase !== PHASES.COMPLETE) {
-      if (timer.isStopped()) {
-        if (currentPhase !== PHASES.REST_BETWEEN_SETS) {
-          if (preparation !== 0) {
-            handleSetTime(preparation);
-            setCurrentPhase(PHASES.COUNTDOWN);
-          }
-        }
-        setTimerOn(true);
-        timer.start();
-      } else if (timer.isPaused()) {
-        setTimerOn(true);
-        timer.resume();
-      } else {
-        setTimerOn(false);
-        timer.pause();
-      }
-    }
-  };
-
-  const previousRep = () => {
-    timer.stop();
-    if (currentPhase === PHASES.REST_BETWEEN_SETS) {
-      setCurrentPhase(PHASES.HANG);
-      handleSetTime(hangTime);
-      setSetsLeft(setsLeft + 1);
-      setRepsLeft(1);
-    } else if (currentPhase === PHASES.COMPLETE) {
-      setSetsLeft(1);
-      setRepsLeft(1);
-      setCurrentPhase(PHASES.HANG);
-      handleSetTime(hangTime);
-    } else if (currentPhase === PHASES.COUNTDOWN && time < 50) {
-      handleSetTime(preparation);
-    } else if (repsLeft < reps) {
-      setRepsLeft(repsLeft + 1);
-      setCurrentPhase(PHASES.HANG);
-      handleSetTime(hangTime);
-    } else if (setsLeft < sets) {
-      setCurrentPhase(PHASES.REST_BETWEEN_SETS);
-      handleSetTime(restAfterSet);
-    } else if (repsLeft === reps) {
-      handleSetTime(hangTime);
+    if (isComplete) return;
+    if (timer.isStopped()) {
+      setTimerOn(true);
+      timer.start();
+    } else if (timer.isPaused()) {
+      setTimerOn(true);
+      timer.resume();
+    } else {
+      setTimerOn(false);
+      timer.pause();
     }
   };
 
   const nextRep = () => {
     timer.stop();
-    if (currentPhase === PHASES.REST_BETWEEN_SETS) {
-      setCurrentPhase(PHASES.HANG);
-      handleSetTime(hangTime);
+    setTimerOn(false);
+    const next = hangIdx.find((i) => i > index);
+    if (next == null) {
+      setIndex(stages.length);
+      setTime(0);
     } else {
-      if (repsLeft > 0) {
-        setRepsLeft(repsLeft - 1);
-        setCurrentPhase(PHASES.HANG);
-        handleSetTime(hangTime);
-      }
-      if ((repsLeft - 1 === 0 || repsLeft === 0) && setsLeft - 1 === 0) {
-        setCurrentPhase(PHASES.COMPLETE);
-        handleSetTime(null);
-        setSetsLeft(0);
-        setRepsLeft(0);
-      }
-      if ((repsLeft - 1 === 0 || repsLeft === 0) && setsLeft > 1) {
-        setCurrentPhase(PHASES.REST_BETWEEN_SETS);
-        handleSetTime(restAfterSet);
-        setRepsLeft(reps);
-        setSetsLeft(setsLeft - 1);
-      }
+      setIndex(next);
+      handleSetTime(stages[next].duration);
     }
   };
 
+  const previousRep = () => {
+    timer.stop();
+    setTimerOn(false);
+
+    if (currentStage?.kind === STAGE.PREP) {
+      handleSetTime(currentStage.duration);
+      return;
+    }
+
+    const atOrBefore = [...hangIdx].reverse().find((i) => i <= index);
+    let target;
+    if (atOrBefore == null) {
+      target = hangIdx[0] ?? 0;
+    } else if (
+      atOrBefore === index &&
+      currentStage?.kind === STAGE.HANG &&
+      time > currentStage.duration * 10 - 30
+    ) {
+      target = [...hangIdx].reverse().find((i) => i < index) ?? atOrBefore;
+    } else {
+      target = atOrBefore;
+    }
+    setIndex(target);
+    handleSetTime(stages[target].duration);
+  };
+
+  // Derived progress.
+  const nextHangIdx = isComplete ? null : hangIdx.find((i) => i >= index);
+  const targetSet = nextHangIdx != null ? stages[nextHangIdx].set : 0;
+  const setsLeft = isComplete
+    ? 0
+    : Math.max(0, stages.reduce((m, s) => Math.max(m, s.set), 0) - targetSet + 1);
+  const repsLeft = isComplete
+    ? 0
+    : stages.filter(
+        (s, i) => i >= (nextHangIdx ?? Infinity) && s.kind === STAGE.HANG && s.set === targetSet,
+      ).length;
+
+  const hangsDone = hangsBefore(stages, index);
+  const hangsToGo = Math.max(0, totalHangs - hangsDone);
+
+  const totalSets = useMemo(
+    () => stages.reduce((m, s) => Math.max(m, s.set), 0),
+    [stages],
+  );
+  const setsDone = useMemo(() => {
+    const bySet = new Map();
+    hangIdx.forEach((i) => {
+      const s = stages[i].set;
+      if (!bySet.has(s)) bySet.set(s, []);
+      bySet.get(s).push(i);
+    });
+    let done = 0;
+    bySet.forEach((idxs) => {
+      if (idxs.every((i) => i < index)) done += 1;
+    });
+    return done;
+  }, [stages, hangIdx, index]);
+
+  const elapsedPlannedSec = Math.round(
+    elapsedSec(stages, index) +
+      (currentStage ? currentStage.duration - time / 10 : 0),
+  );
+
+  const canNext = !isComplete;
+  const canPrevious =
+    isComplete ||
+    index > 0 ||
+    time < (stages[0]?.duration ?? 0) * 10;
+
   return {
     currentPhase,
+    currentStage,
+    index,
+    stages,
     setsLeft,
     repsLeft,
+    hangsToGo,
+    hangsDone,
+    totalHangs,
+    totalSets,
+    setsDone,
     mins,
     secs,
     tenths,
     time,
+    workSec,
+    elapsedPlannedSec,
+    canNext,
+    canPrevious,
     toggle,
     previousRep,
     nextRep,

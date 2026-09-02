@@ -7,7 +7,7 @@ import CustomAlert from '@/components/ui/CustomAlert';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 import { useToast } from '@/components/ui/Toast';
 import { palette } from '@/constants/common';
-import { getBuiltinWorkout } from '@/constants/workouts';
+import { getBuiltinWorkout, workoutFields } from '@/constants/workouts';
 import { useWorkouts } from '@/hooks/useWorkouts';
 
 export default function ConfigureWorkoutScreen() {
@@ -24,7 +24,6 @@ export default function ConfigureWorkoutScreen() {
   const [name, setName] = useState('');
   const [removeVisible, setRemoveVisible] = useState(false);
 
-  // Seed / re-seed the editable name once the workout is available.
   useEffect(() => {
     if (custom) setName(custom.name ?? '');
   }, [custom]);
@@ -39,29 +38,24 @@ export default function ConfigureWorkoutScreen() {
     );
   }
 
+  const resolve = (values) => ({
+    ...workout,
+    id: String(id),
+    name: values.name?.trim() || workout.name || 'Workout',
+    ...workoutFields(values),
+  });
+
   const startTimer = (values) => {
     router.push({
       pathname: '/workout/[id]/timer',
-      params: {
-        id: String(id),
-        name: values.name?.trim() || workout.name || 'Workout',
-        sets: values.sets,
-        reps: values.reps,
-        hangTime: values.hangTime,
-        repRest: values.repRest,
-        setRest: values.setRest,
-      },
+      params: { id: String(id), w: JSON.stringify(resolve(values)) },
     });
   };
 
   const save = (values) => {
     update(id, {
       name: values.name?.trim() || workout.name,
-      sets: values.sets,
-      reps: values.reps,
-      hangTime: values.hangTime,
-      repRest: values.repRest,
-      setRest: values.setRest,
+      ...workoutFields(values),
     });
     toast.show('Workout saved');
   };

@@ -1,16 +1,17 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { palette, shadows } from '@/constants/common';
-import { formatDuration, plannedWorkoutSeconds } from '@/lib/time';
+import { buildStages } from '@/lib/stages';
+import { formatDuration } from '@/lib/time';
 
-const TotalWorkoutTime = ({ sets, reps, hangTime, repRest, setRest }) => {
-  const total = plannedWorkoutSeconds({ sets, reps, hangTime, repRest, setRest });
+const TotalWorkoutTime = ({ workout, prep = 0 }) => {
+  const { workSec } = buildStages(workout, prep);
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Total workout time</Text>
       <View style={styles.pill}>
-        <Text style={styles.time}>{formatDuration(total)}</Text>
+        <Text style={styles.time}>{formatDuration(workSec)}</Text>
       </View>
     </View>
   );

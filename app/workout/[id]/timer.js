@@ -22,7 +22,6 @@ import { palette } from '@/constants/common';
 import { useHistory } from '@/hooks/useHistory';
 import { useSettings } from '@/hooks/useSettings';
 import { PHASES, useWorkoutTimer } from '@/hooks/useWorkoutTimer';
-import { hangsPlannedSeconds, plannedWorkoutSeconds } from '@/lib/time';
 
 const RING_SIZE = 260;
 
@@ -51,41 +50,46 @@ export default function TimerScreen() {
   const { audioEnabled, prep } = useSettings();
   const history = useHistory();
 
-  const config = useMemo(
-    () => ({
-      name: String(params.name ?? 'Workout'),
-      sets: Number(params.sets) || 1,
-      reps: Number(params.reps) || 1,
-      hangTime: Number(params.hangTime) || 1,
-      repRest: Number(params.repRest) || 0,
-      setRest: Number(params.setRest) || 0,
-    }),
-    [params.name, params.sets, params.reps, params.hangTime, params.repRest, params.setRest],
-  );
+  const workout = useMemo(() => {
+    try {
+      return JSON.parse(String(params.w));
+    } catch {
+      return { mode: 'basic', name: 'Workout', sets: 1, reps: 1, hangTime: 10, repRest: 0, setRest: 0 };
+    }
+  }, [params.w]);
+  const workoutName = workout.name || 'Workout';
 
   const {
     currentPhase,
+    currentStage,
     setsLeft,
     repsLeft,
+    hangsToGo,
+    hangsDone,
+    totalHangs,
+    totalSets,
+    setsDone,
     mins,
     secs,
     tenths,
     time,
+    workSec,
+    elapsedPlannedSec,
+    canNext,
+    canPrevious,
     toggle,
     previousRep,
     nextRep,
     timer,
-  } = useWorkoutTimer({ ...config, prep, audioEnabled });
+  } = useWorkoutTimer({ workout, prep, audioEnabled });
 
   const isComplete = currentPhase === PHASES.COMPLETE;
   const running = timer.isRunning();
 
-  const totalHangs = config.sets * config.reps;
-  const hangsToGo = Math.max(0, (setsLeft - 1) * config.reps + repsLeft);
-  const hangsDone = Math.max(0, totalHangs - hangsToGo);
-
   const addHistory = history.add;
   const savedRef = useRef(false);
+  const elapsedRef = useRef(0);
+  elapsedRef.current = elapsedPlannedSec;
 
   const logSession = useCallback(
     (partial) => {
@@ -93,18 +97,18 @@ export default function TimerScreen() {
       savedRef.current = true;
       const hangs = partial ? hangsDone : totalHangs;
       if (hangs <= 0) return;
+      const isBasic = workout.mode !== 'advanced';
       addHistory({
-        workoutName: config.name,
-        reps: config.reps,
-        sets: partial ? Math.floor(hangs / config.reps) : config.sets,
+        workoutName,
+        mode: isBasic ? 'basic' : 'advanced',
+        reps: isBasic ? workout.reps : undefined,
+        sets: partial ? Math.max(1, setsDone) : totalSets,
         hangs,
-        plannedSec: partial
-          ? hangsPlannedSeconds(config, hangs)
-          : plannedWorkoutSeconds(config),
+        plannedSec: partial ? elapsedRef.current : workSec,
         partial: !!partial,
       });
     },
-    [addHistory, config, hangsDone, totalHangs],
+    [addHistory, hangsDone, totalHangs, totalSets, setsDone, workout, workoutName, workSec],
   );
 
   useEffect(() => {
@@ -134,14 +138,7 @@ export default function TimerScreen() {
     },
   ];
 
-  const phaseDuration =
-    {
-      [PHASES.HANG]: config.hangTime,
-      [PHASES.COUNTDOWN]: prep,
-      [PHASES.REST_AFTER_HANG]: config.repRest,
-      [PHASES.REST_BETWEEN_SETS]: config.setRest,
-    }[currentPhase] ?? config.hangTime;
-  const phaseMs = phaseDuration * 1000;
+  const phaseMs = (currentStage?.duration ?? 1) * 1000;
 
   // Drive the ring with one Reanimated shared value. The JS timer only touches
   // it at phase boundaries / pause / resume; the sweep runs on the UI thread, so
@@ -170,7 +167,9 @@ export default function TimerScreen() {
     }
 
     return () => cancelAnimation(ringProgress);
-  }, [currentPhase, running, isComplete, phaseMs, ringProgress]);
+    // currentStage identity changes on every stage advance (even hang -> hang),
+    // which is what should reset the ring.
+  }, [currentStage, running, isComplete, phaseMs, ringProgress]);
 
   // Stable handler identities so <ControlButtons> can bail out of the 10Hz
   // re-render and only update when the running / disabled flags change.
@@ -182,9 +181,8 @@ export default function TimerScreen() {
 
   const ringColor = PHASE_RING_COLOR[currentPhase] ?? palette.phaseHang;
 
-  const previousDisabled =
-    timer.isStopped() && repsLeft === config.reps && setsLeft === config.sets;
-  const nextDisabled = timer.isStopped() && repsLeft === 0 && setsLeft === 0;
+  const previousDisabled = !canPrevious;
+  const nextDisabled = !canNext;
 
   return (
     <View
@@ -193,7 +191,7 @@ export default function TimerScreen() {
         { paddingBottom: (isComplete ? 24 : 140) + insets.bottom },
       ]}
     >
-      <Stack.Screen options={{ title: config.name }} />
+      <Stack.Screen options={{ title: workoutName }} />
       <Gradient phase={currentPhase} />
 
       <Text style={styles.hangsToGo}>

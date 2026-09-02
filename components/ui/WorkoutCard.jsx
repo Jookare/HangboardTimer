@@ -16,8 +16,12 @@ const WorkoutCard = ({ workout, add = false, layout = 'column', onPress }) => {
   const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
   const details = [];
   if (!add) {
-    if (workout?.sets) details.push(plural(workout.sets, 'set'));
-    if (workout?.reps) details.push(plural(workout.reps, 'rep'));
+    if (workout?.mode === 'advanced' && Array.isArray(workout.plan)) {
+      details.push(plural(workout.plan.length, 'set'), 'custom');
+    } else {
+      if (workout?.sets) details.push(plural(workout.sets, 'set'));
+      if (workout?.reps) details.push(plural(workout.reps, 'rep'));
+    }
   }
 
   return (

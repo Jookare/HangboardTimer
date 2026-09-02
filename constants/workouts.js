@@ -10,6 +10,7 @@ export const BUILTIN_WORKOUTS = [
     name: 'Max Hangs',
     icon: 'flame',
     colorScheme: 'blue',
+    mode: 'basic',
     sets: 5,
     reps: 1,
     hangTime: 10,
@@ -21,6 +22,7 @@ export const BUILTIN_WORKOUTS = [
     name: 'Repeaters',
     icon: 'water',
     colorScheme: 'green',
+    mode: 'basic',
     sets: 3,
     reps: 5,
     hangTime: 7,
@@ -32,12 +34,36 @@ export const BUILTIN_WORKOUTS = [
 export const getBuiltinWorkout = (id) =>
   BUILTIN_WORKOUTS.find((w) => w.id === id) ?? null;
 
+// The mode-specific fields to persist, from a WorkoutForm `values` object.
+// The other mode's fields are set undefined so they drop out on save.
+export const workoutFields = (values) =>
+  values.mode === 'advanced'
+    ? {
+        mode: 'advanced',
+        plan: values.plan,
+        sets: undefined,
+        reps: undefined,
+        hangTime: undefined,
+        repRest: undefined,
+        setRest: undefined,
+      }
+    : {
+        mode: 'basic',
+        sets: values.sets,
+        reps: values.reps,
+        hangTime: values.hangTime,
+        repRest: values.repRest,
+        setRest: values.setRest,
+        plan: undefined,
+      };
+
 // Blank workout used by the "new custom workout" screen.
 export const EMPTY_WORKOUT = {
   id: null,
   name: '',
   icon: 'barbell',
   colorScheme: 'yellow',
+  mode: 'basic',
   sets: 3,
   reps: 5,
   hangTime: 10,
